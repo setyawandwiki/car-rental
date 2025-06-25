@@ -107,5 +107,5 @@ CREATE TABLE orders (
     updated_at DATE,
     CONSTRAINT fk_user FOREIGN KEY (id_user) REFERENCES users(id),
     CONSTRAINT fk_company FOREIGN KEY (id_company) REFERENCES companies(id),
-    CONSTRAINT fk_status FOREIGN KEY (id_statu) REFERENCES status(id)
+    CONSTRAINT fk_status FOREIGN KEY (id_status) REFERENCES status(id)
 );
