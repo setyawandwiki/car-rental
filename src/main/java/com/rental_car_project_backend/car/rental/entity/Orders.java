@@ -1,0 +1,45 @@
+package com.rental_car_project_backend.car.rental.entity;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
+
+@Table(name = "orders")
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
+public class Orders {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @Column(name = "pickup_loc")
+    private String pickupLoc;
+    @Column(name = "dropoff_loc")
+    private String dropoff_loc;
+    @Column(name = "pickup_date")
+    private LocalDateTime pickupDate;
+    @Column(name = "dropoff_date")
+    private LocalDateTime dropoffDate;
+    @Column(name = "price_total")
+    private double priceTotal;
+    @Column(name = "id_company")
+    private int idCompany;
+    @Column(name = "id_user")
+    private int idUser;
+    @Column(name = "id_status")
+    private int idStatus;
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedat;
+}
