@@ -9,4 +9,4 @@ CREATE TABLE roles(
 ALTER TABLE cities ADD CONSTRAINT unique_city UNIQUE (name);
 
 INSERT INTO countries(id, name) VALUES (1, 'Indonesia');
-INSERT INTO cities
+INSERT INTO cities(id_country, name) VALUES (1, 'Bogor'),(1, 'Jakarta'),(1, 'Bekasi');
