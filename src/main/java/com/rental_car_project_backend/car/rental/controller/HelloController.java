@@ -1,4 +1,4 @@
-package com.rental_car_project_backend.car.rental;
+package com.rental_car_project_backend.car.rental.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -27,31 +27,31 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getPassword() {
-        return users.get;
+        return users.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return "";
+        return users.getEmail();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return true;
     }
 }
