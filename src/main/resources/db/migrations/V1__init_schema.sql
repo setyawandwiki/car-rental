@@ -30,13 +30,6 @@ CREATE TABLE address (
     CONSTRAINT fk_city FOREIGN KEY (id_city) REFERENCES cities(id)
 );
 
-CREATE TABLE roles(
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP
-);
-
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
     full_name VARCHAR(255),
