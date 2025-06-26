@@ -31,10 +31,10 @@ public class SecurityConfig {
         return http
                 .authorizeHttpRequests(request ->
                         request
-//                                .requestMatchers("/api/v1/**")
-//                                .permitAll()
+                                .requestMatchers("/auth/**")
+                                .permitAll()
                                 .anyRequest()
-                                .permitAll())
+                                .authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->

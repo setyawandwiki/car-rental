@@ -31,26 +31,20 @@ public class AuthServiceImpl implements AuthService {
     private final JWTService jwtService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
     @Override
-    public LoginResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
         Users users = new Users();
         users.setEmail(request.getEmail());
         users.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
         users.setIdRole(1);
         Users save = userRepository.save(users);
-        RegisterResponse userResponse = RegisterResponse.builder()
+        return RegisterResponse.builder()
                 .id(save.getId())
                 .email(save.getEmail())
-                .build();
-        return LoginResponse.builder()
-                .message("User registeres sucessfully")
-                .userResponse(userResponse)
                 .build();
     }
 
     @Override
     public LoginResponse login(LoginRequest request) {
-        System.out.println("TEST - 2");
-        System.out.println(request.getEmail() + " " + request.getPassword());
         Authentication authenticate = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         Users users = userRepository.findByEmail(request.getEmail()).orElseThrow(() ->
@@ -59,7 +53,6 @@ public class AuthServiceImpl implements AuthService {
                 .email(users.getEmail())
                 .id(users.getId())
                 .build();
-        System.out.println("TEST - 1");
         if(authenticate.isAuthenticated()){
             String token = jwtService.generateToken(request.getEmail());
             return LoginResponse.builder()

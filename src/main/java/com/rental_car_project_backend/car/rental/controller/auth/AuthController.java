@@ -3,6 +3,7 @@ package com.rental_car_project_backend.car.rental.controller.auth;
 import com.rental_car_project_backend.car.rental.dto.request.LoginRequest;
 import com.rental_car_project_backend.car.rental.dto.request.RegisterRequest;
 import com.rental_car_project_backend.car.rental.dto.response.LoginResponse;
+import com.rental_car_project_backend.car.rental.dto.response.RegisterResponse;
 import com.rental_car_project_backend.car.rental.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
     private final AuthService authService;
     @PostMapping(path = "/register")
-    public ResponseEntity<LoginResponse> register(@Valid @RequestBody RegisterRequest request){
-        LoginResponse register = authService.register(request);
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request){
+        RegisterResponse register = authService.register(request);
         return ResponseEntity.status(HttpStatus.OK).body(register);
     }
     @PostMapping(path = "/login")
