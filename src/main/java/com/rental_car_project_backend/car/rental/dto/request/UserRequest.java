@@ -29,5 +29,6 @@ public class UserRequest {
     private String phoneNumber;
     @NotBlank(message = "password cannot be null")
     private String password;
+    @NotBlank(message = "role cannot be null")
     private int idRole;
 }
