@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class AuthResponse {
+public class LoginResponse {
     private String message;
     private String token;
-    private UserResponse userResponse;
+    private RegisterResponse userResponse;
 }
