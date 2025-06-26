@@ -2,6 +2,7 @@ package com.rental_car_project_backend.car.rental.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class UserRequest {
     @Email
     private String email;
     @NotBlank(message = "phone number cannot be null")
+    @Pattern(regexp = "^(\\+62|62|0)8[1-9][0-9]{6,9}$")
     private String phoneNumber;
     @NotBlank(message = "password cannot be null")
     private String password;
