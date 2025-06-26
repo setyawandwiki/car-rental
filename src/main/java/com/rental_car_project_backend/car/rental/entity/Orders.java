@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class Orders {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(name = "pickup_loc")
     private String pickupLoc;
     @Column(name = "dropoff_loc")
@@ -31,11 +31,11 @@ public class Orders {
     @Column(name = "price_total")
     private double priceTotal;
     @Column(name = "id_company")
-    private int idCompany;
+    private Integer idCompany;
     @Column(name = "id_user")
-    private int idUser;
+    private Integer idUser;
     @Column(name = "id_status")
-    private int idStatus;
+    private Integer idStatus;
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;

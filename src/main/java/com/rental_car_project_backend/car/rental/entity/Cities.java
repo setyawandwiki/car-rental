@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
 public class Cities {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(name = "id_country")
-    private int idCountry;
+    private Integer idCountry;
     @Column(name = "name")
     private String name;
     @Column(name = "created_at")

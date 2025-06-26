@@ -19,13 +19,13 @@ import java.time.LocalDateTime;
 public class CompanyCar {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(name = "id_company")
-    private int idCompany;
+    private Integer idCompany;
     @Column(name = "price")
-    private double price;
+    private Double price;
     @Column(name = "id_car_type")
-    private int idCarType;
+    private Integer idCarType;
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;

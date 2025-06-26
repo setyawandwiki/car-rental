@@ -19,11 +19,11 @@ import java.time.LocalDateTime;
 public class Companies {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(name = "name")
     private String name;
     @Column(name = "rate")
-    private int rate;
+    private Integer rate;
     @Column(name = "image")
     private String image;
     @Column(name = "created_at")

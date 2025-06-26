@@ -17,15 +17,15 @@ import java.time.LocalDateTime;
 public class Cars {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(name = "name")
     private String name;
     @Column(name = "seats")
-    private int seats;
+    private Integer seats;
     @Column(name = "baggages")
-    private int baggages;
+    private Integer baggages;
     @Column(name = "year")
-    private int year;
+    private Integer year;
     @Column(name = "image")
     private String image;
     @Column(name = "created_at")
