@@ -1,6 +1,7 @@
 package com.rental_car_project_backend.car.rental.global;
 
 import com.rental_car_project_backend.car.rental.dto.response.ErrorResponse;
+import com.rental_car_project_backend.car.rental.exceptions.NullPointerException;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.UsernameAndPasswordInvalidException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +32,18 @@ public class GlobalExceptionHandler {
     public ErrorResponse usernameAndPasswordInvalid(HttpServletRequest request,
                                                HttpServletResponse response,
                                                UsernameAndPasswordInvalidException e){
+        log.info("something wrong with endpoint {}, with status code {}, message : {}",
+                request.getRequestURI(), response.getStatus(), e.getMessage());
+        return ErrorResponse.builder()
+                .code(HttpStatus.UNAUTHORIZED.value())
+                .message(e.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+    @ExceptionHandler(NullPointerException.class)
+    public ErrorResponse nullPointerException(HttpServletRequest request,
+                                                    HttpServletResponse response,
+                                                    NullPointerException e){
         log.info("something wrong with endpoint {}, with status code {}, message : {}",
                 request.getRequestURI(), response.getStatus(), e.getMessage());
         return ErrorResponse.builder()
