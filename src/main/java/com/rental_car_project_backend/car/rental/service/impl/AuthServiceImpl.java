@@ -5,6 +5,7 @@ import com.rental_car_project_backend.car.rental.dto.request.UserRequest;
 import com.rental_car_project_backend.car.rental.dto.response.AuthResponse;
 import com.rental_car_project_backend.car.rental.dto.response.UserResponse;
 import com.rental_car_project_backend.car.rental.entity.Users;
+import com.rental_car_project_backend.car.rental.exceptions.UsernameAndPasswordInvalidException;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
 import com.rental_car_project_backend.car.rental.service.AuthService;
 import com.rental_car_project_backend.car.rental.service.JWTService;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -57,10 +59,25 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse login(AuthRequest request) {
         Authentication authenticate = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        Users users = userRepository.findByEmail(request.getEmail()).orElseThrow(() ->
+                new UsernameNotFoundException("User Not Found"));
+        UserResponse userResponse = UserResponse.builder()
+                .birthDate(users.getBirthDate())
+                .email(users.getEmail())
+                .phoneNumber(users.getPhoneNumber())
+                .id(users.getId())
+                .idCity(users.getIdCity())
+                .fullName(users.getFullName())
+                .build();
         if(authenticate.isAuthenticated()){
-            return jwtService.generateToken(request.getEmail());
+            String token = jwtService.generateToken(request.getEmail());
+            return AuthResponse.builder()
+                    .message("Login Successful")
+                    .token(token)
+                    .userResponse(userResponse)
+                    .build();
         }else{
-            throw UsernameAndPasswordInvalidException();
+            throw new UsernameAndPasswordInvalidException("Invalid email or password");
         }
     }
 }
