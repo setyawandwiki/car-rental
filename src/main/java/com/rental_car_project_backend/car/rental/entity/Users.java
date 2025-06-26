@@ -32,6 +32,8 @@ public class Users {
     private String email;
     @Column(name = "phone_number")
     private String phoneNumber;
+    @Column(name = "password")
+    private String password;
     @Column(name = "id_role")
     private int idRole;
     @Column(name = "created_at")
