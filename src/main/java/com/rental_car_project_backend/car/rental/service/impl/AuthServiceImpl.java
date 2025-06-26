@@ -1,9 +1,9 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
-import com.rental_car_project_backend.car.rental.dto.request.AuthRequest;
-import com.rental_car_project_backend.car.rental.dto.request.UserRequest;
-import com.rental_car_project_backend.car.rental.dto.response.AuthResponse;
-import com.rental_car_project_backend.car.rental.dto.response.UserResponse;
+import com.rental_car_project_backend.car.rental.dto.request.LoginRequest;
+import com.rental_car_project_backend.car.rental.dto.request.RegisterRequest;
+import com.rental_car_project_backend.car.rental.dto.response.LoginResponse;
+import com.rental_car_project_backend.car.rental.dto.response.RegisterResponse;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.exceptions.UsernameAndPasswordInvalidException;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
@@ -31,17 +31,13 @@ public class AuthServiceImpl implements AuthService {
     private final JWTService jwtService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
     @Override
-    public AuthResponse register(UserRequest request) {
+    public LoginResponse register(RegisterRequest request) {
         Users users = new Users();
-        users.setBirthDate(request.getBirthDate());
         users.setEmail(request.getEmail());
-        users.setIdCity(request.getIdCity());
         users.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
-        users.setIdRole(request.getIdRole());
-        users.setFullName(request.getFullName());
-        users.setIdCity(request.getIdCity());
+        users.setIdRole(1);
         Users save = userRepository.save(users);
-        UserResponse userResponse = UserResponse.builder()
+        RegisterResponse userResponse = RegisterResponse.builder()
                 .id(save.getId())
                 .email(save.getEmail())
                 .birthDate(save.getBirthDate())
@@ -49,19 +45,19 @@ public class AuthServiceImpl implements AuthService {
                 .idCity(save.getIdCity())
                 .phoneNumber(save.getPhoneNumber())
                 .build();
-        return AuthResponse.builder()
+        return LoginResponse.builder()
                 .message("User registeres sucessfully")
                 .userResponse(userResponse)
                 .build();
     }
 
     @Override
-    public AuthResponse login(AuthRequest request) {
+    public LoginResponse login(LoginRequest request) {
         Authentication authenticate = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         Users users = userRepository.findByEmail(request.getEmail()).orElseThrow(() ->
                 new UsernameNotFoundException("User Not Found"));
-        UserResponse userResponse = UserResponse.builder()
+        RegisterResponse userResponse = RegisterResponse.builder()
                 .birthDate(users.getBirthDate())
                 .email(users.getEmail())
                 .phoneNumber(users.getPhoneNumber())
@@ -71,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
                 .build();
         if(authenticate.isAuthenticated()){
             String token = jwtService.generateToken(request.getEmail());
-            return AuthResponse.builder()
+            return LoginResponse.builder()
                     .message("Login Successful")
                     .token(token)
                     .userResponse(userResponse)

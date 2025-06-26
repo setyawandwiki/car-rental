@@ -1,10 +1,10 @@
 package com.rental_car_project_backend.car.rental.service;
 
-import com.rental_car_project_backend.car.rental.dto.request.AuthRequest;
-import com.rental_car_project_backend.car.rental.dto.request.UserRequest;
-import com.rental_car_project_backend.car.rental.dto.response.AuthResponse;
+import com.rental_car_project_backend.car.rental.dto.request.LoginRequest;
+import com.rental_car_project_backend.car.rental.dto.request.RegisterRequest;
+import com.rental_car_project_backend.car.rental.dto.response.LoginResponse;
 
 public interface AuthService {
-    AuthResponse register(UserRequest request);
-    AuthResponse login(AuthRequest request);
+    LoginResponse register(RegisterRequest request);
+    LoginResponse login(LoginRequest request);
 }

@@ -14,21 +14,10 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserRequest {
-    @NotBlank(message = "full name cannot be null")
-    private String fullName;
-    @NotBlank(message = "city cannot be null")
-    private int idCity;
-    @NotBlank(message = "birth date cannot be null")
-    private Date birthDate;
+public class RegisterRequest {
     @NotBlank(message = "email cannot be null")
     @Email
     private String email;
-    @NotBlank(message = "phone number cannot be null")
-    @Pattern(regexp = "^(\\+62|62|0)8[1-9][0-9]{6,9}$")
-    private String phoneNumber;
     @NotBlank(message = "password cannot be null")
     private String password;
-    @NotBlank(message = "role cannot be null")
-    private int idRole;
 }
