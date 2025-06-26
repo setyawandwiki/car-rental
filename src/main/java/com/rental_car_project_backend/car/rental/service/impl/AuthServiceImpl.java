@@ -40,10 +40,6 @@ public class AuthServiceImpl implements AuthService {
         RegisterResponse userResponse = RegisterResponse.builder()
                 .id(save.getId())
                 .email(save.getEmail())
-                .birthDate(save.getBirthDate())
-                .fullName(save.getFullName())
-                .idCity(save.getIdCity())
-                .phoneNumber(save.getPhoneNumber())
                 .build();
         return LoginResponse.builder()
                 .message("User registeres sucessfully")
@@ -53,18 +49,17 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public LoginResponse login(LoginRequest request) {
+        System.out.println("TEST - 2");
+        System.out.println(request.getEmail() + " " + request.getPassword());
         Authentication authenticate = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         Users users = userRepository.findByEmail(request.getEmail()).orElseThrow(() ->
                 new UsernameNotFoundException("User Not Found"));
         RegisterResponse userResponse = RegisterResponse.builder()
-                .birthDate(users.getBirthDate())
                 .email(users.getEmail())
-                .phoneNumber(users.getPhoneNumber())
                 .id(users.getId())
-                .idCity(users.getIdCity())
-                .fullName(users.getFullName())
                 .build();
+        System.out.println("TEST - 1");
         if(authenticate.isAuthenticated()){
             String token = jwtService.generateToken(request.getEmail());
             return LoginResponse.builder()
