@@ -7,8 +7,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,9 +14,5 @@ import java.util.Date;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class RegisterResponse {
     private int id;
-    private String fullName;
-    private int idCity;
-    private Date birthDate;
     private String email;
-    private String phoneNumber;
 }
