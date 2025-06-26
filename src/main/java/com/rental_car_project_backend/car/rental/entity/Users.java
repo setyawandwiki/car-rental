@@ -1,6 +1,7 @@
 package com.rental_car_project_backend.car.rental.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,11 +22,11 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private Integer id;
     @Column(name = "full_name")
     private String fullName;
     @Column(name = "id_city")
-    private int idCity;
+    private Integer idCity;
     @Column(name = "birth_date")
     private Date birthDate;
     @Column(name = "email")
@@ -35,7 +36,7 @@ public class Users {
     @Column(name = "password")
     private String password;
     @Column(name = "id_role")
-    private int idRole;
+    private Integer idRole;
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;

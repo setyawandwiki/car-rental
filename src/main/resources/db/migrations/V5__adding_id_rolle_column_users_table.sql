@@ -1,0 +1,4 @@
+ALTER TABLE users ADD COLUMN id_role INT;
+
+ALTER TABLE users
+ADD CONSTRAINT fk_role FOREIGN KEY (id_role) REFERENCES roles(id);

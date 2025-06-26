@@ -19,11 +19,11 @@ import java.time.LocalDateTime;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column(name = "address")
     private String address;
     @Column(name = "id_city")
-    private int idCity;
+    private Integer idCity;
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
