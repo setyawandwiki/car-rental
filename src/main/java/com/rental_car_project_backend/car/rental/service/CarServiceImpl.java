@@ -17,7 +17,9 @@ public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
     @Override
     public CreateCarResponse create(CreateCarRequest request) {
+        System.out.println("✅ Authenticated: " + SecurityContextHolder.getContext().getAuthentication());
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+
         if(!authenticated){
             throw new SecurityException("You must logged in first!");
         }

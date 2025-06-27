@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -28,11 +29,16 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        System.out.println("testing");
         return http
                 .authorizeHttpRequests(request ->
                         request
                                 .requestMatchers("/auth/**")
                                 .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/car").hasAuthority("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE,"/car/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT,"/car/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/car/**").hasAnyRole("USER","ADMIN")
                                 .anyRequest()
                                 .authenticated())
                 .csrf(AbstractHttpConfigurer::disable)
