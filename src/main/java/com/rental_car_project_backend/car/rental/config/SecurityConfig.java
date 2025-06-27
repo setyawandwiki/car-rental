@@ -1,5 +1,6 @@
 package com.rental_car_project_backend.car.rental.config;
 
+import com.rental_car_project_backend.car.rental.global.ExceptionFilterHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -23,13 +24,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    @Autowired
-    private final CustomUserDetailService customUserDetailService;
-    @Autowired
     private final JwtFilter jwtFilter;
+    private final CustomUserDetailService customUserDetailService;
+    private final ExceptionFilterHandler exceptionFilterHandler;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        System.out.println("testing");
         return http
                 .authorizeHttpRequests(request ->
                         request
@@ -45,6 +44,7 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(exceptionFilterHandler, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
