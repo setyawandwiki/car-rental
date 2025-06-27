@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import io.jsonwebtoken.io.Decoders;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Function;
 
@@ -19,7 +20,7 @@ public class JWTService {
     private String jwtSecret;
 
     public SecretKey secretKey(){
-        byte[] decode = Decoders.BASE64URL.decode(jwtSecret);
+        byte[] decode = jwtSecret.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(decode);
     }
 

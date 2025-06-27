@@ -1,26 +1,29 @@
 package com.rental_car_project_backend.car.rental.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.rental_car_project_backend.car.rental.repository.RoleRepository;
+import com.rental_car_project_backend.car.rental.repository.UserRepository;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class UserPrincipal implements UserDetails {
     private Users users;
+    private String roleName;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("USER"), new SimpleGrantedAuthority("USER"));
+        return List.of(new SimpleGrantedAuthority(roleName));
     }
 
     @Override
