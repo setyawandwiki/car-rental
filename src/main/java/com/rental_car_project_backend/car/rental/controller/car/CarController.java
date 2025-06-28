@@ -1,9 +1,11 @@
 package com.rental_car_project_backend.car.rental.controller.car;
 
 import com.rental_car_project_backend.car.rental.dto.request.CreateCarRequest;
+import com.rental_car_project_backend.car.rental.dto.request.UpdateCarRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.DeleteCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.GetCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.UpdateCarResponse;
 import com.rental_car_project_backend.car.rental.service.impl.CarService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +39,11 @@ public class CarController {
     public ResponseEntity<DeleteCarResponse> deleteCar(@PathVariable("id") Integer id){
         DeleteCarResponse deleteCarResponse = carService.deleteCarById(id);
         return ResponseEntity.status(HttpStatus.OK).body(deleteCarResponse);
+    }
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<UpdateCarResponse> updateCar(@PathVariable("id") Integer id,
+                                                       @Valid @RequestBody UpdateCarRequest request){
+        UpdateCarResponse updateCarResponse = carService.updateCar(id, request);
+        return ResponseEntity.status(HttpStatus.OK).body(updateCarResponse);
     }
 }
