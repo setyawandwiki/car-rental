@@ -2,7 +2,9 @@ package com.rental_car_project_backend.car.rental.service;
 
 import com.rental_car_project_backend.car.rental.dto.request.CreateCarRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.GetCarResponse;
 import com.rental_car_project_backend.car.rental.entity.Cars;
+import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.CarRepository;
 import com.rental_car_project_backend.car.rental.service.impl.CarService;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +45,11 @@ public class CarServiceImpl implements CarService {
                 .year(save.getYear())
                 .baggages(save.getBaggages())
                 .build();
+    }
+
+    @Override
+    public GetCarResponse getCar(Integer id) {
+        carRepository.findById(id).orElseThrow(()-> new CarNotFoundException("Car with id " + id + " not found"));
+        return null;
     }
 }
