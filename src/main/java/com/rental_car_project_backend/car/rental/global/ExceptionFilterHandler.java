@@ -24,8 +24,7 @@ public class ExceptionFilterHandler extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
             filterChain.doFilter(request, response);
-        }catch (ExpiredJwtException | MalformedJwtException | SignatureException |
-                IllegalArgumentException | BadCredentialsException | CredentialsExpiredException e){
+        }catch (ExpiredJwtException | MalformedJwtException | SignatureException e){
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
 
