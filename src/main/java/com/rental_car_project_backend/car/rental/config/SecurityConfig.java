@@ -27,10 +27,14 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final CustomUserDetailService customUserDetailService;
     private final ExceptionFilterHandler exceptionFilterHandler;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JWTAuthenticationEntryPointHandler jwtAuthenticationEntryPointHandler;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .exceptionHandling(exception -> exception.)
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(jwtAuthenticationEntryPointHandler)
+                                .accessDeniedHandler(jwtAccessDeniedHandler))
                 .authorizeHttpRequests(request ->
                         request
                                 .requestMatchers("/auth/**")
