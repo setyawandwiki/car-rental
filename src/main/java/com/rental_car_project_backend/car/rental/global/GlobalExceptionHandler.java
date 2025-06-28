@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
         log.info("something wrong with endpoint {}, with status code {}, message : {}",
                 request.getRequestURI(), response.getStatus(), e.getMessage());
         return ErrorResponse.builder()
-                .code(HttpStatus.UNAUTHORIZED.value())
+                .code(HttpStatus.NOT_FOUND.value())
                 .message(e.getMessage())
                 .timestamp(new Date(System.currentTimeMillis()))
                 .build();
