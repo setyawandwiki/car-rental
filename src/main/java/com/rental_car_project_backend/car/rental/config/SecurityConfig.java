@@ -30,6 +30,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .exceptionHandling(exception -> exception.)
                 .authorizeHttpRequests(request ->
                         request
                                 .requestMatchers("/auth/**")
@@ -48,8 +49,8 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(exceptionFilterHandler, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(exceptionFilterHandler, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
