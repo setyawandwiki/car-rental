@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ public class CarServiceImpl implements CarService {
         cars.setImage(request.getImage());
         cars.setYear(request.getYear());
         cars.setSeats(request.getSeats());
+        cars.setCreatedAt(LocalDateTime.now());
         Cars save = carRepository.save(cars);
         return CreateCarResponse.builder()
                 .name(save.getName())
