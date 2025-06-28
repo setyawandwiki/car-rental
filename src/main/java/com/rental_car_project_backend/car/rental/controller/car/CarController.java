@@ -2,6 +2,7 @@ package com.rental_car_project_backend.car.rental.controller.car;
 
 import com.rental_car_project_backend.car.rental.dto.request.CreateCarRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.GetCarResponse;
 import com.rental_car_project_backend.car.rental.service.impl.CarService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +21,8 @@ public class CarController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createCarResponse);
     }
     @GetMapping("/{id}")
-    public ResponseEntity<CreateCarResponse> createCar(@PathVariable("id") Integer id){
-        CreateCarResponse createCarResponse = carService.create(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createCarResponse);
+    public ResponseEntity<GetCarResponse> getCar(@PathVariable("id") Integer id){
+        GetCarResponse carResponse = carService.getCar(id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(carResponse);
     }
 }

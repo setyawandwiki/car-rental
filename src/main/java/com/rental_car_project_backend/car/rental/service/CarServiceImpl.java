@@ -49,7 +49,17 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public GetCarResponse getCar(Integer id) {
-        carRepository.findById(id).orElseThrow(()-> new CarNotFoundException("Car with id " + id + " not found"));
-        return null;
+        Cars car = carRepository.findById(id).orElseThrow(()
+                -> new CarNotFoundException("Car with id " + id + " not found"));
+        return GetCarResponse.builder()
+                .id(car.getId())
+                .year(car.getYear())
+                .seats(car.getSeats())
+                .name(car.getName())
+                .baggages(car.getBaggages())
+                .createdAt(car.getCreatedAt())
+                .image(car.getImage())
+                .updatedAt(car.getUpdatedAt())
+                .build();
     }
 }
