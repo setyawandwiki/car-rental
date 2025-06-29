@@ -23,6 +23,5 @@ public class CreateCarRequest {
     private Integer baggages;
     @NotNull(message = "year is required")
     private Integer year;
-    @NotNull(message = "image is required")
     private MultipartFile imageFile;
 }

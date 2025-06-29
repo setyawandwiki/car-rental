@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -16,5 +17,5 @@ public class UpdateCarRequest {
     private Integer seats;
     private Integer baggages;
     private Integer year;
-    private String image;
+    private MultipartFile imageFile;
 }

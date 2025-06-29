@@ -14,6 +14,6 @@ public interface CarService {
     CreateCarResponse create(CreateCarRequest request) throws IOException;
     GetCarResponse getCar(Integer id);
     List<GetCarResponse> getCars();
-    DeleteCarResponse deleteCarById(Integer id);
-    UpdateCarResponse updateCar(Integer id, UpdateCarRequest request);
+    DeleteCarResponse deleteCarById(Integer id) throws IOException;
+    UpdateCarResponse updateCar(Integer id, UpdateCarRequest request) throws IOException;
 }

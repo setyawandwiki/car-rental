@@ -20,7 +20,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
     private static final long MAX_FILE_SIZE_KB = 1024;
 
     @Override
-    public String uploadImage(MultipartFile file) throws IOException {
+    public String uploadImage(MultipartFile file, String publicId) throws IOException {
         String contentType = file.getContentType();
         if (contentType == null || !ALLOWED_TYPES.contains(contentType)) {
             throw new IllegalArgumentException("File harus berupa gambar JPG atau PNG");
@@ -31,7 +31,16 @@ public class ImageUploadServiceImpl implements ImageUploadService {
             throw new IllegalArgumentException("Ukuran maksimal gambar adalah 1MB");
         }
 
-        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.emptyMap());
+        Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
+                "folder", "car-images",
+                "public_id", publicId,         // <- nama file khusus (tanpa folder)
+                "overwrite", true
+        ));
         return (String) uploadResult.get("secure_url");
+    }
+
+    @Override
+    public void deleteImage(String image) throws IOException {
+        cloudinary.uploader().destroy("car-images/"+image, ObjectUtils.emptyMap());
     }
 }

@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,8 +38,8 @@ public class CarServiceImpl implements CarService {
         if (!authenticated) {
             throw new SecurityException("You must logged in first!");
         }
-
-        String imageUrl = imageUploadService.uploadImage(request.getImageFile());
+        String uniqueImageId = "car-" + UUID.randomUUID();
+        String imageUrl = imageUploadService.uploadImage(request.getImageFile(), uniqueImageId);
 
         Cars cars = new Cars();
         cars.setBaggages(request.getBaggages());
@@ -93,14 +95,18 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public DeleteCarResponse deleteCarById(Integer id) {
+    public DeleteCarResponse deleteCarById(Integer id) throws IOException {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){
             throw new SecurityException("You must logged in first!");
         }
         Cars cars = carRepository.findById(id).orElseThrow(()
                 -> new CarNotFoundException("Car with id " + id + " not found"));
+        String urlImage = cars.getImage();
+        String fileName = urlImage.substring(urlImage.lastIndexOf("/") + 1);
+        String publicId = fileName.substring(0, fileName.lastIndexOf("."));
         carRepository.deleteById(cars.getId());
+        imageUploadService.deleteImage(publicId);
         return DeleteCarResponse.builder()
                 .id(cars.getId())
                 .message("Success delete car with id " + id)
@@ -108,7 +114,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public UpdateCarResponse updateCar(Integer id, UpdateCarRequest request) {
+    public UpdateCarResponse updateCar(Integer id, UpdateCarRequest request) throws IOException {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){
             throw new SecurityException("You must logged in first!");
@@ -128,8 +134,10 @@ public class CarServiceImpl implements CarService {
         if(Objects.nonNull(request.getBaggages())){
             cars.setBaggages(request.getBaggages());
         }
-        if(Objects.nonNull(request.getImage())){
-            cars.setImage(request.getImage());
+        if (request.getImageFile() != null && !request.getImageFile().isEmpty()) {
+            String publicId = "car-" + id;
+            String imageUrl = imageUploadService.uploadImage(request.getImageFile(), publicId); // overwrite
+            cars.setImage(imageUrl);
         }
         cars.setCreatedAt(cars.getCreatedAt());
         cars.setUpdatedAt(LocalDateTime.now());
