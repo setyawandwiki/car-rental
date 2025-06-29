@@ -1,5 +1,6 @@
 package com.rental_car_project_backend.car.rental.service;
 
+import com.cloudinary.Cloudinary;
 import com.rental_car_project_backend.car.rental.dto.request.CreateCarRequest;
 import com.rental_car_project_backend.car.rental.dto.request.UpdateCarRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCarResponse;
@@ -27,9 +28,9 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
+    private final Cloudinary cloudinary;
     @Override
     public CreateCarResponse create(CreateCarRequest request) {
-        System.out.println("test");
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
 
         if(!authenticated){
