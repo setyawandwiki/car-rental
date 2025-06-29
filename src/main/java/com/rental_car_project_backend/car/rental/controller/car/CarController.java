@@ -6,7 +6,7 @@ import com.rental_car_project_backend.car.rental.dto.response.CreateCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.DeleteCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.GetCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.UpdateCarResponse;
-import com.rental_car_project_backend.car.rental.service.impl.CarService;
+import com.rental_car_project_backend.car.rental.service.CarService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

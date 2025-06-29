@@ -1,6 +1,5 @@
-package com.rental_car_project_backend.car.rental.service;
+package com.rental_car_project_backend.car.rental.service.impl;
 
-import com.cloudinary.Cloudinary;
 import com.rental_car_project_backend.car.rental.dto.request.CreateCarRequest;
 import com.rental_car_project_backend.car.rental.dto.request.UpdateCarRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCarResponse;
@@ -10,36 +9,40 @@ import com.rental_car_project_backend.car.rental.dto.response.UpdateCarResponse;
 import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.CarRepository;
-import com.rental_car_project_backend.car.rental.service.impl.CarService;
+import com.rental_car_project_backend.car.rental.service.CarService;
+import com.rental_car_project_backend.car.rental.service.ImageUploadService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
-    private final Cloudinary cloudinary;
+    private final ImageUploadService imageUploadService;
+
     @Override
-    public CreateCarResponse create(CreateCarRequest request) {
+    public CreateCarResponse create(CreateCarRequest request) throws IOException {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
 
-        if(!authenticated){
+        if (!authenticated) {
             throw new SecurityException("You must logged in first!");
         }
+
+        String imageUrl = imageUploadService.uploadImage(request.getImageFile());
+
         Cars cars = new Cars();
         cars.setBaggages(request.getBaggages());
         cars.setName(request.getName());
-        cars.setImage(request.getImage());
+        cars.setImage(imageUrl);
         cars.setYear(request.getYear());
         cars.setSeats(request.getSeats());
         cars.setCreatedAt(LocalDateTime.now());

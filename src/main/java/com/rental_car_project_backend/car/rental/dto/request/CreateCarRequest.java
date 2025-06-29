@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -23,5 +24,5 @@ public class CreateCarRequest {
     @NotNull(message = "year is required")
     private Integer year;
     @NotNull(message = "image is required")
-    private String image;
+    private MultipartFile imageFile;
 }
