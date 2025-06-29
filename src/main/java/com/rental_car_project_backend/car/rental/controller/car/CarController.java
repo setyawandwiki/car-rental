@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -21,7 +23,12 @@ import java.util.List;
 public class CarController {
     private final CarService carService;
     @PostMapping
-    public ResponseEntity<CreateCarResponse> createCar(@Valid @RequestBody CreateCarRequest request){
+    public ResponseEntity<CreateCarResponse> createCar(@Valid @RequestParam("name") String name,
+                                                       @RequestParam("year") Integer year,
+                                                       @RequestParam("seats") Integer seats,
+                                                       @RequestParam("baggages") Integer baggages,
+                                                       @RequestParam("image")MultipartFile image) throws IOException {
+        CreateCarRequest request = new CreateCarRequest(name, seats, baggages, year, image);
         CreateCarResponse createCarResponse = carService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createCarResponse);
     }
@@ -36,13 +43,18 @@ public class CarController {
         return ResponseEntity.status(HttpStatus.OK).body(cars);
     }
     @DeleteMapping(path = "/{id}")
-    public ResponseEntity<DeleteCarResponse> deleteCar(@PathVariable("id") Integer id){
+    public ResponseEntity<DeleteCarResponse> deleteCar(@PathVariable("id") Integer id) throws IOException {
         DeleteCarResponse deleteCarResponse = carService.deleteCarById(id);
         return ResponseEntity.status(HttpStatus.OK).body(deleteCarResponse);
     }
     @PutMapping(path = "/{id}")
     public ResponseEntity<UpdateCarResponse> updateCar(@PathVariable("id") Integer id,
-                                                       @Valid @RequestBody UpdateCarRequest request){
+                                                       @Valid @RequestParam("name") String name,
+                                                       @RequestParam("year") Integer year,
+                                                       @RequestParam("seats") Integer seats,
+                                                       @RequestParam("baggages") Integer baggages,
+                                                       @RequestParam("image")MultipartFile image) throws IOException {
+        UpdateCarRequest request = new UpdateCarRequest(name, seats, baggages, year, image);
         UpdateCarResponse updateCarResponse = carService.updateCar(id, request);
         return ResponseEntity.status(HttpStatus.OK).body(updateCarResponse);
     }
