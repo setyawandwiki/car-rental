@@ -1,4 +1,4 @@
-package com.rental_car_project_backend.car.rental.controller.car;
+package com.rental_car_project_backend.car.rental.controller;
 
 import com.rental_car_project_backend.car.rental.dto.request.CreateCarRequest;
 import com.rental_car_project_backend.car.rental.dto.request.UpdateCarRequest;

@@ -24,6 +24,4 @@ public class CreateCompanyRequest {
     private String name;
     private Double rate = 3.5;
     private MultipartFile imageFile;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }
