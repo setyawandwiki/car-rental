@@ -40,7 +40,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
     }
 
     @Override
-    public void deleteImage(String image) throws IOException {
-        cloudinary.uploader().destroy("car-images/"+image, ObjectUtils.emptyMap());
+    public void deleteImage(String image, String location) throws IOException {
+        cloudinary.uploader().destroy(location + "/"+image, ObjectUtils.emptyMap());
     }
 }

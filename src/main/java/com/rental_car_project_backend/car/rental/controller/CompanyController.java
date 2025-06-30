@@ -3,6 +3,7 @@ package com.rental_car_project_backend.car.rental.controller;
 import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyRequest;
 import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.DeleteCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyResponse;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import jakarta.validation.Valid;
@@ -38,7 +39,12 @@ public class CompanyController {
     )
             throws IOException {
         UpdateCompanyRequest request = new UpdateCompanyRequest(name, rate, image);
-        UpdateCompanyResponse updateCompanyResponse = companyService.updateCompanyResponse(id, request);
+        UpdateCompanyResponse updateCompanyResponse = companyService.updateCompany(id, request);
         return ResponseEntity.status(HttpStatus.OK).body(updateCompanyResponse);
+    }
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<DeleteCompanyResponse> deleteCompany(@PathVariable Integer id) throws IOException {
+        DeleteCompanyResponse deletecompany = companyService.deletecompany(id);
+        return ResponseEntity.ok().body(deletecompany);
     }
 }
