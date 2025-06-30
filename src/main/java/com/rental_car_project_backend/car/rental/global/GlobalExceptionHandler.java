@@ -1,10 +1,8 @@
 package com.rental_car_project_backend.car.rental.global;
 
 import com.rental_car_project_backend.car.rental.dto.response.ErrorResponse;
-import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
+import com.rental_car_project_backend.car.rental.exceptions.*;
 import com.rental_car_project_backend.car.rental.exceptions.NullPointerException;
-import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
-import com.rental_car_project_backend.car.rental.exceptions.UsernameAndPasswordInvalidException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -101,6 +99,19 @@ public class GlobalExceptionHandler {
         return ErrorResponse.builder()
                 .code(HttpStatus.BAD_REQUEST.value())
                 .message("Validation failed: " + errorMessage)
+                .timestamp(new Date(System.currentTimeMillis()))
+                .build();
+    }
+    @ExceptionHandler(CompanyNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse companyNotFound(HttpServletRequest request,
+                                               HttpServletResponse response,
+                                               CompanyNotFoundException e) {
+        log.info("something wrong with endpoint {}, with status code {}, message : {}",
+                request.getRequestURI(), response.getStatus(), e.getMessage());
+        return ErrorResponse.builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
                 .timestamp(new Date(System.currentTimeMillis()))
                 .build();
     }

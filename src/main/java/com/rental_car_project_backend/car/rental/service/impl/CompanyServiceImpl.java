@@ -1,7 +1,9 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyRequest;
+import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyResponse;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
@@ -42,5 +44,15 @@ public class CompanyServiceImpl implements CompanyService {
                 .createdAt(save.getCreatedAt())
                 .updatedAt(save.getUpdatedAt())
                 .build();
+    }
+
+    @Override
+    public UpdateCompanyResponse updateCompanyResponse(Integer id, UpdateCompanyRequest request) {
+        boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+        if(!authenticated){
+            throw new SecurityException("You must logged in first!");
+        }
+        companyRepository.findById(id).orElseThrow(()-> new CompanyNotFoundException())
+        return null;
     }
 }
