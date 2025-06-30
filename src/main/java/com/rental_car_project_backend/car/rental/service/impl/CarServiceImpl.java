@@ -106,7 +106,7 @@ public class CarServiceImpl implements CarService {
         String fileName = urlImage.substring(urlImage.lastIndexOf("/") + 1);
         String publicId = fileName.substring(0, fileName.lastIndexOf("."));
         carRepository.deleteById(cars.getId());
-        imageUploadService.deleteImage(publicId);
+        imageUploadService.deleteImage(publicId, "car-images");
         return DeleteCarResponse.builder()
                 .id(cars.getId())
                 .message("Success delete car with id " + id)

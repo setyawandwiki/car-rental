@@ -3,6 +3,7 @@ package com.rental_car_project_backend.car.rental.service.impl;
 import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyRequest;
 import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.DeleteCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyResponse;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
@@ -49,7 +50,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public UpdateCompanyResponse updateCompanyResponse(Integer id, UpdateCompanyRequest request) throws IOException {
+    public UpdateCompanyResponse updateCompany(Integer id, UpdateCompanyRequest request) throws IOException {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){
             throw new SecurityException("You must logged in first!");
@@ -80,6 +81,26 @@ public class CompanyServiceImpl implements CompanyService {
                 .name(save.getName())
                 .updatedAt(save.getUpdatedAt())
                 .createdAt(save.getCreatedAt())
+                .build();
+    }
+
+    @Override
+    public DeleteCompanyResponse deletecompany(Integer id) throws IOException {
+        boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+        if(!authenticated){
+            throw new SecurityException("You must logged in first!");
+        }
+        Companies company = companyRepository.findById(id)
+                .orElseThrow(() -> new CompanyNotFoundException("Company not found with id " + id));
+        String urlImage = company.getImage();
+        String fileName = urlImage.substring(urlImage.lastIndexOf("/") + 1);
+        String publicId = fileName.substring(0, fileName.lastIndexOf("."));
+        imageUploadService.deleteImage(publicId, "company-images");
+        System.out.println(publicId);
+        companyRepository.delete(company);
+        return DeleteCompanyResponse.builder()
+                .id(company.getId())
+                .message("Success delete company with id " + id)
                 .build();
     }
 }
