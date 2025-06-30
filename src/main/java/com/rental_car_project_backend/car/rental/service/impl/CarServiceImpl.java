@@ -39,7 +39,7 @@ public class CarServiceImpl implements CarService {
             throw new SecurityException("You must logged in first!");
         }
         String uniqueImageId = "car-" + UUID.randomUUID();
-        String imageUrl = imageUploadService.uploadImage(request.getImageFile(), uniqueImageId);
+        String imageUrl = imageUploadService.uploadImage(request.getImageFile(), uniqueImageId, "car-images");
 
         Cars cars = new Cars();
         cars.setBaggages(request.getBaggages());
@@ -136,7 +136,7 @@ public class CarServiceImpl implements CarService {
         }
         if (request.getImageFile() != null && !request.getImageFile().isEmpty()) {
             String publicId = "car-" + id;
-            String imageUrl = imageUploadService.uploadImage(request.getImageFile(), publicId); // overwrite
+            String imageUrl = imageUploadService.uploadImage(request.getImageFile(), publicId, "car-images"); // overwrite
             cars.setImage(imageUrl);
         }
         cars.setCreatedAt(cars.getCreatedAt());
