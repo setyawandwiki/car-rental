@@ -1,6 +1,9 @@
-package com.rental_car_project_backend.car.rental.entity;
+package com.rental_car_project_backend.car.rental.dto.response;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,26 +13,15 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-@Table(name = "companies")
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Companies {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CreateCompanyResponse {
     private Integer id;
-    @Column(name = "name")
     private String name;
-    @Column(name = "rate")
     private Double rate;
-    @Column(name = "image")
     private String image;
-    @Column(name = "created_at")
-    @CreationTimestamp
     private LocalDateTime createdAt;
-    @Column(name = "updated_at")
-    @UpdateTimestamp
     private LocalDateTime updatedAt;
 }
