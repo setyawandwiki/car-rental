@@ -47,6 +47,8 @@ public class SecurityConfig {
                                 .hasAnyAuthority("SUPERADMIN","ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/car/**")
                                 .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/car")
+                                .hasAnyAuthority("ADMIN", "SUPERADMIN")
                                 .anyRequest()
                                 .authenticated())
                 .csrf(AbstractHttpConfigurer::disable)

@@ -23,7 +23,7 @@ public class CompanyController {
     @PostMapping
     public ResponseEntity<CreateCompanyResponse> createCompany(@Valid @RequestParam("name") String name,
                                                                @RequestParam("image")MultipartFile image,
-                                                               @RequestParam("rate") Double rate) throws IOException {
+                                                               @RequestParam(value = "rate", required = false, defaultValue = "3.5") Double rate) throws IOException {
         CreateCompanyRequest request = new CreateCompanyRequest(name, rate, image);
         CreateCompanyResponse company = companyService.createCompany(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(company);
