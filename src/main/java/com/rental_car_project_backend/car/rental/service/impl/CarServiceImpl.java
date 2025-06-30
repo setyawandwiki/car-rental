@@ -136,7 +136,7 @@ public class CarServiceImpl implements CarService {
         }
         if (request.getImageFile() != null && !request.getImageFile().isEmpty()) {
             String publicId = "car-" + id;
-            String imageUrl = imageUploadService.uploadImage(request.getImageFile(), publicId, "car-images"); // overwrite
+            String imageUrl = imageUploadService.uploadImage(request.getImageFile(), publicId, "car-images");
             cars.setImage(imageUrl);
         }
         cars.setCreatedAt(cars.getCreatedAt());

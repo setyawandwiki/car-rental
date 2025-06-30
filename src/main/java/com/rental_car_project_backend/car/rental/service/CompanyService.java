@@ -9,5 +9,5 @@ import java.io.IOException;
 
 public interface CompanyService {
     CreateCompanyResponse createCompany(CreateCompanyRequest request) throws IOException;
-    UpdateCompanyResponse updateCompanyResponse(Integer id, UpdateCompanyRequest request);
+    UpdateCompanyResponse updateCompanyResponse(Integer id, UpdateCompanyRequest request) throws IOException;
 }

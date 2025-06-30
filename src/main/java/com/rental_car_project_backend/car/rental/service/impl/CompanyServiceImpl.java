@@ -5,6 +5,7 @@ import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyReques
 import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyResponse;
 import com.rental_car_project_backend.car.rental.entity.Companies;
+import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import com.rental_car_project_backend.car.rental.service.ImageUploadService;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -47,12 +49,34 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public UpdateCompanyResponse updateCompanyResponse(Integer id, UpdateCompanyRequest request) {
+    public UpdateCompanyResponse updateCompanyResponse(Integer id, UpdateCompanyRequest request) throws IOException {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){
             throw new SecurityException("You must logged in first!");
         }
-        companyRepository.findById(id).orElseThrow(()-> new CompanyNotFoundException())
-        return null;
+        Companies company = companyRepository.findById(id)
+                .orElseThrow(() -> new CompanyNotFoundException("Company not found with id " + id));
+        if(Objects.nonNull(request.getName())){
+            company.setName(request.getName());
+        }
+        if(Objects.nonNull(request.getRate())){
+            company.setRate(request.getRate());
+        }
+        if(Objects.nonNull(request.getImageFile())){
+            String publicId = "company-" + id;
+            String imageUrl = imageUploadService
+                    .uploadImage(request.getImageFile(), publicId, "company-images");
+            company.setImage(imageUrl);
+        }
+        company.setUpdatedAt(LocalDateTime.now());
+        company.setCreatedAt(company.getCreatedAt());
+        Companies save = companyRepository.save(company);
+        return UpdateCompanyResponse.builder()
+                .rate(save.getRate())
+                .image(save.getImage())
+                .name(save.getName())
+                .updatedAt(save.getUpdatedAt())
+                .createdAt(save.getCreatedAt())
+                .build();
     }
 }
