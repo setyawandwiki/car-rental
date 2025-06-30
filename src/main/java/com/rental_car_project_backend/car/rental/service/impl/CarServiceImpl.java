@@ -143,7 +143,7 @@ public class CarServiceImpl implements CarService {
         cars.setUpdatedAt(LocalDateTime.now());
         Cars car = carRepository.save(cars);
         return UpdateCarResponse.builder()
-                .id(car.getId())
+                .id(cars.getId())
                 .year(car.getYear())
                 .seats(car.getSeats())
                 .name(car.getName())

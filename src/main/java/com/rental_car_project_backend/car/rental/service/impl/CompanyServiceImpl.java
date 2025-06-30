@@ -63,7 +63,9 @@ public class CompanyServiceImpl implements CompanyService {
             company.setRate(request.getRate());
         }
         if(Objects.nonNull(request.getImageFile())){
-            String publicId = "company-" + id;
+            String urlImage = company.getImage();
+            String fileName = urlImage.substring(urlImage.lastIndexOf("/") + 1);
+            String publicId = fileName.substring(0, fileName.lastIndexOf("."));
             String imageUrl = imageUploadService
                     .uploadImage(request.getImageFile(), publicId, "company-images");
             company.setImage(imageUrl);
@@ -72,6 +74,7 @@ public class CompanyServiceImpl implements CompanyService {
         company.setCreatedAt(company.getCreatedAt());
         Companies save = companyRepository.save(company);
         return UpdateCompanyResponse.builder()
+                .id(company.getId())
                 .rate(save.getRate())
                 .image(save.getImage())
                 .name(save.getName())
