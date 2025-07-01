@@ -7,6 +7,7 @@ import com.rental_car_project_backend.car.rental.dto.response.GetCompanyCarRespo
 import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.entity.CompanyCar;
+import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
 import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyCarNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
@@ -19,7 +20,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -81,7 +81,7 @@ public class CompanyCarServiceImpl implements CompanyCarService {
         CompanyCar companyCar = companyCarRepository.findById(id).orElseThrow(()
                 -> new CompanyCarNotFoundException("Company car with id " + id + " not found"));
 
-        companyCar.setStatus("DELETE");
+        companyCar.setStatus(CompanyCarStatus.DELETE);
         companyCarRepository.save(companyCar);
         return DeleteCompanyCarResponse.builder()
                 .id(companyCar.getId())

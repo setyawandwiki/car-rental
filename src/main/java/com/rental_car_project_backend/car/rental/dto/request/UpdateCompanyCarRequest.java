@@ -1,7 +1,9 @@
-package com.rental_car_project_backend.car.rental.entity;
+package com.rental_car_project_backend.car.rental.dto.request;
 
 import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,31 +13,16 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
-@Table(name = "company_cars")
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CompanyCar {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    @Column(name = "id_company")
+public class UpdateCompanyCarRequest {
     private Integer idCompany;
-    @Column(name = "price")
     private Double price;
-    @Column(name = "id_car")
     private Integer idCar;
-    @Column(name = "id_car_type")
     private Integer idCarType;
-    @Column(name = "status")
-    @Enumerated(value = EnumType.STRING)
     private CompanyCarStatus status;
-    @Column(name = "created_at")
-    @CreationTimestamp
     private LocalDateTime createdAt;
-    @Column(name = "updated_at")
-    @UpdateTimestamp
     private LocalDateTime updatedAt;
 }
