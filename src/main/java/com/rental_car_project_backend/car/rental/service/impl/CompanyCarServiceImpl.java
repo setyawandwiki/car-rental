@@ -1,9 +1,11 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyCarRequest;
+import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyCarRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.DeleteCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.GetCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.entity.CompanyCar;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -86,6 +89,44 @@ public class CompanyCarServiceImpl implements CompanyCarService {
         return DeleteCompanyCarResponse.builder()
                 .id(companyCar.getId())
                 .message("Success delete company car")
+                .build();
+    }
+
+    @Override
+    public UpdateCompanyCarResponse updateCompanyCar(Integer id, UpdateCompanyCarRequest request) {
+        boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+        if(!authenticated){
+            throw new SecurityException("You must logged in first!");
+        }
+        CompanyCar companyCar = companyCarRepository.findById(id).orElseThrow(()
+                -> new CompanyCarNotFoundException("Company car with id " + id + " not found"));
+        if(Objects.nonNull(request.getIdCompany())){
+            companyCar.setIdCompany(request.getIdCompany());
+        }
+        if(Objects.nonNull(request.getIdCar())){
+            companyCar.setIdCar(request.getIdCar());
+        }
+        if(Objects.nonNull(request.getIdCarType())){
+            companyCar.setIdCarType(request.getIdCarType());
+        }
+        if(Objects.nonNull(request.getStatus())){
+            companyCar.setStatus(request.getStatus());
+        }
+        if(Objects.nonNull(request.getPrice())){
+            companyCar.setPrice(request.getPrice());
+        }
+        companyCar.setUpdatedAt(LocalDateTime.now());
+        companyCar.setCreatedAt(companyCar.getCreatedAt());
+        CompanyCar save = companyCarRepository.save(companyCar);
+        return UpdateCompanyCarResponse.builder()
+                .id(save.getId())
+                .idCompany(save.getIdCompany())
+                .updatedAt(save.getUpdatedAt())
+                .idCar(save.getIdCar())
+                .createdAt(save.getCreatedAt())
+                .idCarType(save.getIdCarType())
+                .price(save.getPrice())
+                .status(save.getStatus())
                 .build();
     }
 }
