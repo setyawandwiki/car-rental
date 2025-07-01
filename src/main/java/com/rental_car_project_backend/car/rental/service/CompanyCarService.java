@@ -15,4 +15,5 @@ public interface CompanyCarService {
     List<GetCompanyCarResponse> getCompanyCars();
     DeleteCompanyCarResponse deleteCompanyCar(Integer id);
     UpdateCompanyCarResponse updateCompanyCar(Integer id, UpdateCompanyCarRequest request);
+    GetCompanyCarResponse findCompanyCar(Integer id);
 }

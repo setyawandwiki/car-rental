@@ -70,6 +70,7 @@ public class CompanyCarServiceImpl implements CompanyCarService {
             response.setIdCarType(val.getIdCarType());
             response.setIdCar(val.getIdCar());
             response.setCreatedAt(val.getCreatedAt());
+            response.setStatus(val.getStatus());
             response.setUpdatedAt(val.getUpdatedAt());
             return response;
         }).toList();
@@ -128,5 +129,27 @@ public class CompanyCarServiceImpl implements CompanyCarService {
                 .price(save.getPrice())
                 .status(save.getStatus())
                 .build();
+    }
+
+    @Override
+    public GetCompanyCarResponse findCompanyCar(Integer id) {
+        boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+        if(!authenticated){
+            throw new SecurityException("You must logged in first!");
+        }
+        CompanyCar companyCar = companyCarRepository.findById(id).orElseThrow(()
+                -> new CompanyCarNotFoundException("Company car with id " + id + " not found"));
+
+        return GetCompanyCarResponse.builder()
+                .id(companyCar.getId())
+                .idCompany(companyCar.getIdCompany())
+                .idCar(companyCar.getIdCar())
+                .createdAt(companyCar.getCreatedAt())
+                .updatedAt(companyCar.getUpdatedAt())
+                .idCarType(companyCar.getIdCarType())
+                .price(companyCar.getPrice())
+                .status(companyCar.getStatus())
+                .build();
+    }
     }
 }
