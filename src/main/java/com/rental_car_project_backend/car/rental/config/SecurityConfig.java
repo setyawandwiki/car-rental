@@ -58,6 +58,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/company-car")
                                 .hasAnyAuthority("ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.GET, "/company-car/**")
+                                .hasAnyAuthority("ADMIN", "SUPERADMIN")
+                                .requestMatchers(HttpMethod.GET, "/company-car")
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated())
