@@ -24,6 +24,7 @@ public class CreateCompanyCarResponse {
     private Integer id;
     private Integer idCompany;
     private Double price;
+    private Integer idCar;
     private Integer idCarType;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

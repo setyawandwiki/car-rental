@@ -24,6 +24,8 @@ public class CompanyCar {
     private Integer idCompany;
     @Column(name = "price")
     private Double price;
+    @Column(name = "id_car")
+    private Integer idCar;
     @Column(name = "id_car_type")
     private Integer idCarType;
     @Column(name = "created_at")
