@@ -28,6 +28,8 @@ public class CompanyCar {
     private Integer idCar;
     @Column(name = "id_car_type")
     private Integer idCarType;
+    @Column(name = "status")
+    private String status;
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
