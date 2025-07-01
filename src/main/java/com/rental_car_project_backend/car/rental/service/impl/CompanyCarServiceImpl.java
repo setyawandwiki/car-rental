@@ -2,11 +2,13 @@ package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyCarRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.DeleteCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.GetCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.entity.CompanyCar;
 import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
+import com.rental_car_project_backend.car.rental.exceptions.CompanyCarNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.CarRepository;
 import com.rental_car_project_backend.car.rental.repository.CompanyCarRepository;
@@ -68,5 +70,22 @@ public class CompanyCarServiceImpl implements CompanyCarService {
             response.setUpdatedAt(val.getUpdatedAt());
             return response;
         }).toList();
+    }
+
+    @Override
+    public DeleteCompanyCarResponse deleteCompanyCar(Integer id) {
+        boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+        if(!authenticated){
+            throw new SecurityException("You must logged in first!");
+        }
+        CompanyCar companyCar = companyCarRepository.findById(id).orElseThrow(()
+                -> new CompanyCarNotFoundException("Company car with id " + id + " not found"));
+
+        companyCar.setStatus("DELETE");
+        companyCarRepository.save(companyCar);
+        return DeleteCompanyCarResponse.builder()
+                .id(companyCar.getId())
+                .message("Success delete company car")
+                .build();
     }
 }
