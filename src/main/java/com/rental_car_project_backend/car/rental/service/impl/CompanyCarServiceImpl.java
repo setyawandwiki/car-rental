@@ -2,6 +2,7 @@ package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyCarRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.GetCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.entity.CompanyCar;
@@ -16,6 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +37,8 @@ public class CompanyCarServiceImpl implements CompanyCarService {
         Cars car = carRepository.findById(request.getCarId()).orElseThrow(() ->
                 new CarNotFoundException("Car not found with id " + request.getCarId()));
         CompanyCar companyCar = new CompanyCar();
-        companyCar.setIdCompany(companyCar.getId());
-        companyCar.setIdCar(companyCar.getIdCar());
+        companyCar.setIdCompany(company.getId());
+        companyCar.setIdCar(car.getId());
         companyCar.setIdCarType(request.getIdCarType());
         companyCar.setCreatedAt(LocalDateTime.now());
         companyCar.setPrice(request.getPrice());
@@ -49,5 +52,21 @@ public class CompanyCarServiceImpl implements CompanyCarService {
                 .idCompany(save.getIdCompany())
                 .price(save.getPrice())
                 .build();
+    }
+
+    @Override
+    public List<GetCompanyCarResponse> getCompanyCars() {
+        List<CompanyCar> all = companyCarRepository.findAll();
+        return all.stream().map(val -> {
+            GetCompanyCarResponse response = new GetCompanyCarResponse();
+            response.setId(val.getId());
+            response.setPrice(val.getPrice());
+            response.setIdCompany(val.getIdCompany());
+            response.setIdCarType(val.getIdCarType());
+            response.setIdCar(val.getIdCar());
+            response.setCreatedAt(val.getCreatedAt());
+            response.setUpdatedAt(val.getUpdatedAt());
+            return response;
+        }).toList();
     }
 }
