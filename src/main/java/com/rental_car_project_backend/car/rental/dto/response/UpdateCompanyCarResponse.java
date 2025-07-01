@@ -2,6 +2,7 @@ package com.rental_car_project_backend.car.rental.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +21,7 @@ public class UpdateCompanyCarResponse {
     private Double price;
     private Integer idCar;
     private Integer idCarType;
+    private CompanyCarStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
