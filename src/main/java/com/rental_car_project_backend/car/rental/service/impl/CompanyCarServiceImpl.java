@@ -151,5 +151,4 @@ public class CompanyCarServiceImpl implements CompanyCarService {
                 .status(companyCar.getStatus())
                 .build();
     }
-    }
 }
