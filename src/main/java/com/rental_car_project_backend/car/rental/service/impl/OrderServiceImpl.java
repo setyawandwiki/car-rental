@@ -1,10 +1,7 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.CreateOrderRequest;
-import com.rental_car_project_backend.car.rental.dto.response.CreateOrderResponse;
-import com.rental_car_project_backend.car.rental.dto.response.GetCarResponse;
-import com.rental_car_project_backend.car.rental.dto.response.GetCompanyCarResponse;
-import com.rental_car_project_backend.car.rental.dto.response.GetCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.*;
 import com.rental_car_project_backend.car.rental.entity.Orders;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.enums.OrderStatus;
@@ -21,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -64,6 +62,43 @@ public class OrderServiceImpl implements OrderService {
                 .status(save.getStatus())
                 .idCompanyCars(save.getIdCompanyCars())
                 .build();
+    }
+
+    @Override
+    public List<GetOrderResponse> getOrderResponse() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("there is no user with email " + email));
+        List<Orders> orders = orderRepository.userOrders(user.getId());
+        return orders.stream().map(val -> {
+            GetOrderResponse orders1 = new GetOrderResponse();
+            orders1.setIdCompanyCars(val.getIdCompanyCars());
+            orders1.setStatus(val.getStatus());
+            orders1.setIdUser(val.getIdUser());
+            orders1.setCreatedAt(val.getCreatedAt());
+            orders1.setDropoff_loc(val.getDropOffLoc());
+            orders1.setPickupLoc(val.getPickupLoc());
+            orders1.setDropoffDate(val.getDropOffDate());
+            orders1.setPickupDate(val.getPickupDate());
+            orders1.setUpdateAt(val.getUpdatedAt());
+            orders1.setId(val.getId());
+            orders1.setPriceTotal(val.getPriceTotal());
+            return orders1;
+        }).toList();
+    }
+
+    @Override
+    public DeleteOrderResponse deleteOrder(Integer id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("there is no user with email " + email));
+        List<Orders> orders = orderRepository.userOrders(user.getId())
+                .stream()
+                .filter(val -> val.getStatus() == OrderStatus.PENDING).toList();
+        if(orders.isEmpty()){
+            throw new Action
+        }
+        return null;
     }
 
 }
