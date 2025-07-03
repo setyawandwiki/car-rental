@@ -14,12 +14,18 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CreateCompanyCarResponse {
+public class CreateOrderResponse {
     private Integer id;
+    private String pickupLoc;
+    private String dropoff_loc;
+    private LocalDateTime pickupDate;
+    private LocalDateTime dropoffDate;
+    private double priceTotal;
     private Integer idCompany;
-    private Double price;
-    private Integer idCar;
-    private Integer idCarType;
+    private Integer idUser;
+    private Integer idStatus;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime updatedat;
+    private GetCarResponse carResponse;
+    private GetCompany
 }

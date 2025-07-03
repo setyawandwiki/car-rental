@@ -4,6 +4,7 @@ import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyReques
 import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.DeleteCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.GetCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyResponse;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -102,5 +105,20 @@ public class CompanyServiceImpl implements CompanyService {
                 .id(company.getId())
                 .message("Success delete company with id " + id)
                 .build();
+    }
+
+    @Override
+    public List<GetCompanyResponse> getCompanies() {
+        List<Companies> companies = companyRepository.findAll();
+        return companies.stream().map(val ->{
+            GetCompanyResponse companyResponse = new GetCompanyResponse();
+            companyResponse.setId(val.getId());
+            companyResponse.setRate(val.getRate());
+            companyResponse.setName(val.getName());
+            companyResponse.setImage(val.getImage());
+            companyResponse.setCreatedAt(val.getCreatedAt());
+            companyResponse.setUpdatedAt(val.getUpdatedAt());
+            return companyResponse;
+        }).toList();
     }
 }

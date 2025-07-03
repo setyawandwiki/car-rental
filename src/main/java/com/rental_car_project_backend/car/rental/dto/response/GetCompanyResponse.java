@@ -14,12 +14,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class CreateCompanyCarResponse {
+public class GetCompanyResponse {
     private Integer id;
-    private Integer idCompany;
-    private Double price;
-    private Integer idCar;
-    private Integer idCarType;
+    private String name;
+    private Double rate;
+    private String image;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
