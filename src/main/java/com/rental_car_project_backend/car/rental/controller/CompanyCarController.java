@@ -10,6 +10,7 @@ import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyCarRe
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

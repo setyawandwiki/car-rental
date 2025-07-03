@@ -2,6 +2,7 @@ package com.rental_car_project_backend.car.rental.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.rental_car_project_backend.car.rental.enums.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,11 +22,11 @@ public class CreateOrderResponse {
     private LocalDateTime pickupDate;
     private LocalDateTime dropoffDate;
     private double priceTotal;
-    private Integer idCompany;
+    private Integer idCompanyCars;
     private Integer idUser;
-    private Integer idStatus;
+    private OrderStatus status;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedat;
+    private LocalDateTime updatedate;
     private GetCarResponse carResponse;
     private GetCompanyResponse companyResponse;
 }

@@ -2,10 +2,7 @@ package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyRequest;
 import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyRequest;
-import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyResponse;
-import com.rental_car_project_backend.car.rental.dto.response.DeleteCompanyResponse;
-import com.rental_car_project_backend.car.rental.dto.response.GetCompanyResponse;
-import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.*;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
@@ -120,5 +117,19 @@ public class CompanyServiceImpl implements CompanyService {
             companyResponse.setUpdatedAt(val.getUpdatedAt());
             return companyResponse;
         }).toList();
+    }
+
+    @Override
+    public GetCompanyResponse findCompany(Integer id) {
+        Companies companies = companyRepository.findById(id).orElseThrow(() ->
+                new CompanyNotFoundException("Company not found with id " + id));
+        return GetCompanyResponse.builder()
+                .createdAt(companies.getCreatedAt())
+                .id(companies.getId())
+                .image(companies.getImage())
+                .name(companies.getName())
+                .updatedAt(companies.getUpdatedAt())
+                .createdAt(companies.getCreatedAt())
+                .build();
     }
 }

@@ -2,10 +2,7 @@ package com.rental_car_project_backend.car.rental.service;
 
 import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyRequest;
 import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyRequest;
-import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyResponse;
-import com.rental_car_project_backend.car.rental.dto.response.DeleteCompanyResponse;
-import com.rental_car_project_backend.car.rental.dto.response.GetCompanyResponse;
-import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,4 +12,5 @@ public interface CompanyService {
     UpdateCompanyResponse updateCompany(Integer id, UpdateCompanyRequest request) throws IOException;
     DeleteCompanyResponse deletecompany(Integer id) throws IOException;
     List<GetCompanyResponse> getCompanies();
+    GetCompanyResponse findCompany(Integer id);
 }
