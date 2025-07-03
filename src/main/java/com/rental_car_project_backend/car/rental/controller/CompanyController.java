@@ -4,6 +4,7 @@ import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyReques
 import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.DeleteCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.GetCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyResponse;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import jakarta.validation.Valid;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping(path = "/company")
@@ -46,5 +48,10 @@ public class CompanyController {
     public ResponseEntity<DeleteCompanyResponse> deleteCompany(@PathVariable Integer id) throws IOException {
         DeleteCompanyResponse deletecompany = companyService.deletecompany(id);
         return ResponseEntity.ok().body(deletecompany);
+    }
+    @GetMapping
+    public ResponseEntity<List<GetCompanyResponse>> getCompany(){
+        List<GetCompanyResponse> companies = companyService.getCompanies();
+        return ResponseEntity.ok().body(companies);
     }
 }
