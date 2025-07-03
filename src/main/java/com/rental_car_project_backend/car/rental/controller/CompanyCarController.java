@@ -19,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CompanyCarController {
     private final CompanyCarService companyCarService;
+    @GetMapping
     public ResponseEntity<List<GetCompanyCarResponse>> getAllCompanyCars(){
         List<GetCompanyCarResponse> companyCars = companyCarService.getCompanyCars();
         return ResponseEntity.ok().body(companyCars);
