@@ -27,5 +27,5 @@ public class CreateOrderResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedat;
     private GetCarResponse carResponse;
-    private GetCompany
+//    private GetCompany
 }

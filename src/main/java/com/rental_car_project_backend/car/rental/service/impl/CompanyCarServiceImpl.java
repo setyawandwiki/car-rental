@@ -33,17 +33,20 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     private final CarRepository carRepository;
     @Override
     public CreateCompanyCarResponse createCompanyCar(CreateCompanyCarRequest request) {
+        System.out.println(request);
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){
             throw new SecurityException("You must logged in first!");
         }
-        Companies company = companyRepository.findById(request.getCompanyId()).orElseThrow(() ->
+        Companies company = companyRepository.findById(request.getIdCompany()).orElseThrow(() ->
                 new CompanyNotFoundException("Company not foound with id " + request.getIdCompany()));
-        Cars car = carRepository.findById(request.getCarId()).orElseThrow(() ->
-                new CarNotFoundException("Car not found with id " + request.getCarId()));
+        Cars car = carRepository.findById(request.getIdCar()).orElseThrow(() ->
+                new CarNotFoundException("Car not found with id " + request.getIdCar()));
         CompanyCar companyCar = new CompanyCar();
         companyCar.setIdCompany(company.getId());
         companyCar.setIdCar(car.getId());
+        companyCar.setPrice(request.getPrice());
+        companyCar.setStatus(CompanyCarStatus.ACTIVE);
         companyCar.setIdCarType(request.getIdCarType());
         companyCar.setCreatedAt(LocalDateTime.now());
         companyCar.setPrice(request.getPrice());
