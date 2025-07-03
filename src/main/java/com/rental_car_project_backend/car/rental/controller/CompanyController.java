@@ -54,4 +54,9 @@ public class CompanyController {
         List<GetCompanyResponse> companies = companyService.getCompanies();
         return ResponseEntity.ok().body(companies);
     }
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<GetCompanyResponse> getCompany(@PathVariable("id") Integer id){
+        GetCompanyResponse companies = companyService.findCompany(id);
+        return ResponseEntity.ok().body(companies);
+    }
 }

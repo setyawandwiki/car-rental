@@ -21,7 +21,7 @@ public class CreateOrderRequest {
     private double priceTotal;
     private Integer idCompanyCars;
     private Integer idUser;
-    private Integer idStatus;
+    private String status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private GetCarResponse carResponse;
