@@ -23,11 +23,11 @@ public class Orders {
     @Column(name = "pickup_loc")
     private String pickupLoc;
     @Column(name = "dropoff_loc")
-    private String dropoff_loc;
+    private String dropOffLoc;
     @Column(name = "pickup_date")
     private LocalDateTime pickupDate;
     @Column(name = "dropoff_date")
-    private LocalDateTime dropoffDate;
+    private LocalDateTime dropOffDate;
     @Column(name = "price_total")
     private double priceTotal;
     @Column(name = "id_company")
@@ -41,5 +41,5 @@ public class Orders {
     private LocalDateTime createdAt;
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private LocalDateTime updatedat;
+    private LocalDateTime updatedAt;
 }

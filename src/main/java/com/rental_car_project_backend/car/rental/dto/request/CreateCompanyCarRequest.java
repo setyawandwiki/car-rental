@@ -1,7 +1,5 @@
 package com.rental_car_project_backend.car.rental.dto.request;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
