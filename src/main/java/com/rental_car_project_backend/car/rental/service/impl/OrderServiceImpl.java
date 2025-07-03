@@ -5,6 +5,7 @@ import com.rental_car_project_backend.car.rental.dto.response.*;
 import com.rental_car_project_backend.car.rental.entity.Orders;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.enums.OrderStatus;
+import com.rental_car_project_backend.car.rental.exceptions.OrdersNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.OrderRepository;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
@@ -96,9 +97,15 @@ public class OrderServiceImpl implements OrderService {
                 .stream()
                 .filter(val -> val.getStatus() == OrderStatus.PENDING).toList();
         if(orders.isEmpty()){
-            throw new Action
+            throw new OrdersNotFoundException("Order not found");
         }
-        return null;
+        Orders orders1 = orderRepository.findById(id).orElseThrow(() ->
+                new OrdersNotFoundException("Order not found with id " + id));
+        orders1.setStatus(OrderStatus.CANCELLED);
+        return DeleteOrderResponse.builder()
+                .id(orders1.getId())
+                .message("Delete Order Success")
+                .build();
     }
 
 }

@@ -128,4 +128,17 @@ public class GlobalExceptionHandler {
                 .timestamp(new Date(System.currentTimeMillis()))
                 .build();
     }
+    @ExceptionHandler(OrdersNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse ordersNotFound(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            OrdersNotFoundException e) {
+        log.info("something wrong with endpoint {}, with status code {}, message : {}",
+                request.getRequestURI(), response.getStatus(), e.getMessage());
+        return ErrorResponse.builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .timestamp(new Date(System.currentTimeMillis()))
+                .build();
+    }
 }
