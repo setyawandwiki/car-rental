@@ -1,5 +1,6 @@
 package com.rental_car_project_backend.car.rental.entity;
 
+import com.rental_car_project_backend.car.rental.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,12 +31,13 @@ public class Orders {
     private LocalDateTime dropOffDate;
     @Column(name = "price_total")
     private double priceTotal;
-    @Column(name = "id_company")
-    private Integer idCompany;
+    @Column(name = "id_company_cars")
+    private Integer idCompanyCars;
     @Column(name = "id_user")
     private Integer idUser;
     @Column(name = "id_status")
-    private Integer idStatus;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
