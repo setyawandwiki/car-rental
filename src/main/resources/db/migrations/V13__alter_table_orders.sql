@@ -1,0 +1,5 @@
+ALTER TABLE orders DROP CONSTRAINT fk_status;
+
+ALTER TABLE orders DROP COLUMN id_status;
+
+ALTER TABLE orders ADD COLUMN status VARCHAR;

@@ -15,11 +15,11 @@ import java.time.LocalDateTime;
 @Builder
 public class CreateOrderRequest {
     private String pickupLoc;
-    private String dropoff_loc;
+    private String dropOffLoc;
     private LocalDateTime pickupDate;
-    private LocalDateTime dropoffDate;
+    private LocalDateTime dropOffDate;
     private double priceTotal;
-    private Integer idCompany;
+    private Integer idCompanyCars;
     private Integer idUser;
     private Integer idStatus;
     private LocalDateTime createdAt;
