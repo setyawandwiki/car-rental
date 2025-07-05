@@ -1,9 +1,9 @@
 package com.rental_car_project_backend.car.rental.controller;
 
-import com.rental_car_project_backend.car.rental.dto.request.CreateOrderRequest;
-import com.rental_car_project_backend.car.rental.dto.response.CreateOrderResponse;
-import com.rental_car_project_backend.car.rental.dto.response.DeleteOrderResponse;
-import com.rental_car_project_backend.car.rental.dto.response.GetOrderResponse;
+import com.rental_car_project_backend.car.rental.dto.request.order.CreateOrderRequest;
+import com.rental_car_project_backend.car.rental.dto.response.order.CreateOrderResponse;
+import com.rental_car_project_backend.car.rental.dto.response.order.DeleteOrderResponse;
+import com.rental_car_project_backend.car.rental.dto.response.order.GetOrderResponse;
 import com.rental_car_project_backend.car.rental.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

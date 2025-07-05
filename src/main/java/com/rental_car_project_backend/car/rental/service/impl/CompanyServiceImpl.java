@@ -1,8 +1,11 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
-import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyRequest;
-import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyRequest;
-import com.rental_car_project_backend.car.rental.dto.response.*;
+import com.rental_car_project_backend.car.rental.dto.request.company.CreateCompanyRequest;
+import com.rental_car_project_backend.car.rental.dto.request.company.UpdateCompanyRequest;
+import com.rental_car_project_backend.car.rental.dto.response.company.CreateCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.DeleteCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.GetCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.UpdateCompanyResponse;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
@@ -14,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;

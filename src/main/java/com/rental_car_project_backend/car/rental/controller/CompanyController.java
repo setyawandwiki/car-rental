@@ -1,11 +1,11 @@
 package com.rental_car_project_backend.car.rental.controller;
 
-import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyRequest;
-import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyRequest;
-import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyResponse;
-import com.rental_car_project_backend.car.rental.dto.response.DeleteCompanyResponse;
-import com.rental_car_project_backend.car.rental.dto.response.GetCompanyResponse;
-import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.request.company.CreateCompanyRequest;
+import com.rental_car_project_backend.car.rental.dto.request.company.UpdateCompanyRequest;
+import com.rental_car_project_backend.car.rental.dto.response.company.CreateCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.DeleteCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.GetCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.UpdateCompanyResponse;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

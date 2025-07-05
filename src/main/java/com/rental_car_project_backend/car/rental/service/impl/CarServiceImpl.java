@@ -1,11 +1,11 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
-import com.rental_car_project_backend.car.rental.dto.request.CreateCarRequest;
-import com.rental_car_project_backend.car.rental.dto.request.UpdateCarRequest;
-import com.rental_car_project_backend.car.rental.dto.response.CreateCarResponse;
-import com.rental_car_project_backend.car.rental.dto.response.DeleteCarResponse;
-import com.rental_car_project_backend.car.rental.dto.response.GetCarResponse;
-import com.rental_car_project_backend.car.rental.dto.response.UpdateCarResponse;
+import com.rental_car_project_backend.car.rental.dto.request.car.CreateCarRequest;
+import com.rental_car_project_backend.car.rental.dto.request.car.UpdateCarRequest;
+import com.rental_car_project_backend.car.rental.dto.response.car.CreateCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.car.DeleteCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.car.GetCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.car.UpdateCarResponse;
 import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.CarRepository;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;

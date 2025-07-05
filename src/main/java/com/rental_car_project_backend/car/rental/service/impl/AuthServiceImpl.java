@@ -1,9 +1,9 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
-import com.rental_car_project_backend.car.rental.dto.request.LoginRequest;
-import com.rental_car_project_backend.car.rental.dto.request.RegisterRequest;
-import com.rental_car_project_backend.car.rental.dto.response.LoginResponse;
-import com.rental_car_project_backend.car.rental.dto.response.RegisterResponse;
+import com.rental_car_project_backend.car.rental.dto.request.user.LoginRequest;
+import com.rental_car_project_backend.car.rental.dto.request.user.RegisterRequest;
+import com.rental_car_project_backend.car.rental.dto.response.user.LoginResponse;
+import com.rental_car_project_backend.car.rental.dto.response.user.RegisterResponse;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.exceptions.UsernameAndPasswordInvalidException;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;

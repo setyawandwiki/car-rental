@@ -1,8 +1,11 @@
 package com.rental_car_project_backend.car.rental.service;
 
-import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyRequest;
-import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyRequest;
-import com.rental_car_project_backend.car.rental.dto.response.*;
+import com.rental_car_project_backend.car.rental.dto.request.company.CreateCompanyRequest;
+import com.rental_car_project_backend.car.rental.dto.request.company.UpdateCompanyRequest;
+import com.rental_car_project_backend.car.rental.dto.response.company.CreateCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.DeleteCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.GetCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.UpdateCompanyResponse;
 
 import java.io.IOException;
 import java.util.List;

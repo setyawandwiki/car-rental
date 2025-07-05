@@ -1,11 +1,11 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
-import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyCarRequest;
-import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyCarRequest;
-import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyCarResponse;
-import com.rental_car_project_backend.car.rental.dto.response.DeleteCompanyCarResponse;
-import com.rental_car_project_backend.car.rental.dto.response.GetCompanyCarResponse;
-import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.request.company_car.CreateCompanyCarRequest;
+import com.rental_car_project_backend.car.rental.dto.request.company_car.UpdateCompanyCarRequest;
+import com.rental_car_project_backend.car.rental.dto.response.company_car.CreateCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company_car.DeleteCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company_car.UpdateCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.entity.CompanyCar;
