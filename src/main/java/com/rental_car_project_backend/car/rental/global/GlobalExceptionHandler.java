@@ -141,4 +141,17 @@ public class GlobalExceptionHandler {
                 .timestamp(new Date(System.currentTimeMillis()))
                 .build();
     }
+    @ExceptionHandler(PaymentExceptions.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse paymentException(HttpServletRequest request,
+                                        HttpServletResponse response,
+                                        PaymentExceptions e) {
+        log.info("something wrong with endpoint {}, with status code {}, message : {}",
+                request.getRequestURI(), response.getStatus(), e.getMessage());
+        return ErrorResponse.builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .timestamp(new Date(System.currentTimeMillis()))
+                .build();
+    }
 }
