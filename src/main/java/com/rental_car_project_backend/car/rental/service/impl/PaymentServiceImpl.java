@@ -1,8 +1,8 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
-import com.rental_car_project_backend.car.rental.dto.request.CreatePaymentRequest;
-import com.rental_car_project_backend.car.rental.dto.request.PaymentNotificationRequest;
-import com.rental_car_project_backend.car.rental.dto.response.CreatedPaymentResponse;
+import com.rental_car_project_backend.car.rental.dto.request.payment.CreatePaymentRequest;
+import com.rental_car_project_backend.car.rental.dto.request.payment.PaymentNotificationRequest;
+import com.rental_car_project_backend.car.rental.dto.response.payment.CreatedPaymentResponse;
 import com.rental_car_project_backend.car.rental.entity.*;
 import com.rental_car_project_backend.car.rental.enums.OrderStatus;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyCarNotFoundException;

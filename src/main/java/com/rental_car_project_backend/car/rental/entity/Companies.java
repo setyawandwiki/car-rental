@@ -29,6 +29,8 @@ public class Companies {
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
+    @Column(name = "id_user")
+    private Integer idUser;
     @Column(name = "updated_at")
     @UpdateTimestamp
     private LocalDateTime updatedAt;

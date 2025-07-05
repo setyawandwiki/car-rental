@@ -1,16 +1,14 @@
 package com.rental_car_project_backend.car.rental.controller;
 
-import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyCarRequest;
-import com.rental_car_project_backend.car.rental.dto.request.CreateCompanyRequest;
-import com.rental_car_project_backend.car.rental.dto.request.UpdateCompanyCarRequest;
-import com.rental_car_project_backend.car.rental.dto.response.CreateCompanyCarResponse;
-import com.rental_car_project_backend.car.rental.dto.response.DeleteCompanyCarResponse;
-import com.rental_car_project_backend.car.rental.dto.response.GetCompanyCarResponse;
-import com.rental_car_project_backend.car.rental.dto.response.UpdateCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.request.company_car.CreateCompanyCarRequest;
+import com.rental_car_project_backend.car.rental.dto.request.company_car.UpdateCompanyCarRequest;
+import com.rental_car_project_backend.car.rental.dto.response.company_car.CreateCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company_car.DeleteCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company_car.UpdateCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
