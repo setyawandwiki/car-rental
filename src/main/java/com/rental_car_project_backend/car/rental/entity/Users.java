@@ -34,6 +34,10 @@ public class Users {
     private String phoneNumber;
     @Column(name = "password")
     private String password;
+    @Column(name = "account_number")
+    private String accountNumber;
+    @Column(name = "bank_code")
+    private String bankCode;
     @Column(name = "id_role")
     private Integer idRole;
     @Column(name = "created_at")

@@ -6,10 +6,12 @@ import com.rental_car_project_backend.car.rental.dto.response.payment.CreatedPay
 import com.rental_car_project_backend.car.rental.entity.*;
 import com.rental_car_project_backend.car.rental.enums.OrderStatus;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyCarNotFoundException;
+import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.PaymentExceptions;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.*;
 import com.rental_car_project_backend.car.rental.service.PaymentService;
+import com.xendit.model.Disbursement;
 import com.xendit.model.Invoice;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +30,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final VendorRepository vendorRepository;
     private final CompanyCarRepository companyCarRepository;
     private final PlatFormProfitRepository platFormProfitRepository;
+    private final CompanyRepository companyRepository;
     @Override
     public CreatedPaymentResponse createPayment(CreatePaymentRequest request) {
         Orders orders = orderRepository.findById(request.getOrderId())
@@ -105,6 +108,10 @@ public class PaymentServiceImpl implements PaymentService {
         Double totalAmount = payments.getAmount();
         Double adminFee = totalAmount * 0.1;
         Double vendorAmount = totalAmount - adminFee;
+        Companies companies = companyRepository.findById(companyCar.getIdCompany())
+                .orElseThrow(()-> new CompanyNotFoundException("company not found"));
+        Users users = userRepository.findById(companies.getIdUser()).orElseThrow(() ->
+                new UserNotFoundException("User not found"));
 
         PlatFormProfit platFormProfit = PlatFormProfit.builder()
                 .profitAmount(adminFee)
@@ -113,6 +120,8 @@ public class PaymentServiceImpl implements PaymentService {
                 .createdAt(LocalDateTime.now())
                 .build();
 
+
+        Disbursement disbursement = Disbursement.create()
         platFormProfitRepository.save(platFormProfit);
 
     }
