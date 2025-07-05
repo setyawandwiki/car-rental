@@ -3,15 +3,12 @@ package com.rental_car_project_backend.car.rental.service.impl;
 import com.rental_car_project_backend.car.rental.dto.request.CreatePaymentRequest;
 import com.rental_car_project_backend.car.rental.dto.request.PaymentNotificationRequest;
 import com.rental_car_project_backend.car.rental.dto.response.CreatedPaymentResponse;
-import com.rental_car_project_backend.car.rental.entity.Orders;
-import com.rental_car_project_backend.car.rental.entity.Payments;
-import com.rental_car_project_backend.car.rental.entity.Users;
+import com.rental_car_project_backend.car.rental.entity.*;
 import com.rental_car_project_backend.car.rental.enums.OrderStatus;
+import com.rental_car_project_backend.car.rental.exceptions.CompanyCarNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.PaymentExceptions;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
-import com.rental_car_project_backend.car.rental.repository.OrderRepository;
-import com.rental_car_project_backend.car.rental.repository.PaymentRepository;
-import com.rental_car_project_backend.car.rental.repository.UserRepository;
+import com.rental_car_project_backend.car.rental.repository.*;
 import com.rental_car_project_backend.car.rental.service.PaymentService;
 import com.xendit.model.Invoice;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +25,8 @@ public class PaymentServiceImpl implements PaymentService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final PaymentRepository paymentRepository;
+    private final VendorRepository vendorRepository;
+    private final CompanyCarRepository companyCarRepository;
     @Override
     public CreatedPaymentResponse createPayment(CreatePaymentRequest request) {
         Orders orders = orderRepository.findById(request.getOrderId())
@@ -94,7 +93,18 @@ public class PaymentServiceImpl implements PaymentService {
         orders.setStatus(OrderStatus.PAID);
         orders.setUpdatedAt(LocalDateTime.now());
         orderRepository.save(orders);
-//
-//        orders.getcom
+
+        CompanyCar companyCar = companyCarRepository
+                .findByIdCompany(orders.getIdCompanyCars()).orElseThrow(() ->
+                        new CompanyCarNotFoundException("Company Car not found"));
+        Vendor vendor = vendorRepository
+                .findByCompanyId(companyCar.getIdCompany()).orElseThrow(()
+                        -> new PaymentExceptions("Vendor not found "));
+
+        Double totalAmount = payments.getAmount();
+        Double adminFee = totalAmount * 0.1;
+        Double vendorAmount = totalAmount - adminFee;
+
+
     }
 }
