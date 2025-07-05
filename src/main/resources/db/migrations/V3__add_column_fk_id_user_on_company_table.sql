@@ -1,0 +1,3 @@
+ALTER TABLE companies ADD COLUMN id_user BIGSERIAL;
+
+ALTER TABLE companies ADD CONSTRAINT fk_user FOREIGN KEY (id_user) REFERENCES users(id);
