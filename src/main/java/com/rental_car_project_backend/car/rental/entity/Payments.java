@@ -4,6 +4,7 @@ import com.rental_car_project_backend.car.rental.enums.OrderStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Data
 public class Payments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,9 +22,9 @@ public class Payments {
     @Column(name = "order_id")
     private Integer orderId;
     @Column(name = "invoice_id")
-    private Integer invoiceId;
+    private String invoiceId;
     @Column(name = "external_id")
-    private Integer externalId;
+    private String externalId;
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;

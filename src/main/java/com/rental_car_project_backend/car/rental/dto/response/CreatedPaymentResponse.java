@@ -19,11 +19,10 @@ import java.time.LocalDateTime;
 public class CreatedPaymentResponse {
     private Integer id;
     private Integer orderId;
-    private Integer invoiceId;
-    private Integer externalId;
+    private String invoiceId;
+    private String externalId;
     private OrderStatus orderStatus;
     private Double amount;
-    private String paymentUrl;
     private LocalDateTime paidAt;
     private LocalDateTime createdAt;
 }
