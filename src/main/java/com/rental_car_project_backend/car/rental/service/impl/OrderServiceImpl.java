@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -41,12 +42,21 @@ public class OrderServiceImpl implements OrderService {
                 new UserNotFoundException("there is no user with email " + email));
         GetCompanyCarResponse companyCar = companyCarService.findCompanyCar(request.getIdCompanyCars());
         GetCompanyResponse company = companyService.findCompany(companyCar.getIdCompany());
-        GetCarResponse car = carService.getCar(companyCar.getIdCar());
+        GetCarResponse carResponse = carService.getCar(companyCar.getIdCar());
+
+        LocalDateTime pickUpDate = request.getPickupDate();
+        LocalDateTime dropOffDate = request.getDropOffDate();
+
+        long hours = Duration.between(pickUpDate, dropOffDate).toHours();
+        Double totalDays = Math.ceil(hours / 24.0);
+        Double totalPrice = companyCar.getPrice() * totalDays;
+
         Orders orders = new Orders();
         orders.setIdCompanyCars(request.getIdCompanyCars());
         orders.setStatus(OrderStatus.PENDING);
         orders.setIdUser(user.getId());
         orders.setCreatedAt(LocalDateTime.now());
+        orders.setPriceTotal(totalPrice);
         orders.setDropOffLoc(request.getDropOffLoc());
         orders.setPickupLoc(request.getPickupLoc());
         orders.setDropOffDate(request.getDropOffDate());
@@ -56,12 +66,12 @@ public class OrderServiceImpl implements OrderService {
         return CreateOrderResponse.builder()
                 .id(save.getId())
                 .createdAt(save.getCreatedAt())
-                .carResponse(car)
+                .carResponse(carResponse)
                 .companyResponse(company)
                 .dropOffLoc(save.getDropOffLoc())
-                .pickupDate(save.getPickupDate())
-                .dropoffDate(save.getDropOffDate())
-                .dropoffDate(save.getPickupDate())
+                .pickUpDate(save.getPickupDate())
+                .pickUpLoc(save.getPickupLoc())
+                .dropOffDate(save.getDropOffDate())
                 .priceTotal(save.getPriceTotal())
                 .idUser(save.getIdUser())
                 .status(save.getStatus())
@@ -71,10 +81,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<GetOrderResponse> getOrderResponse() {
+        System.out.println("test 1");
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException("there is no user with email " + email));
+        System.out.println("test 2" + user);
         List<Orders> orders = orderRepository.userOrders(user.getId());
+        System.out.println(orders.size());
         return orders.stream().map(val -> {
             GetOrderResponse orders1 = new GetOrderResponse();
             orders1.setIdCompanyCars(val.getIdCompanyCars());

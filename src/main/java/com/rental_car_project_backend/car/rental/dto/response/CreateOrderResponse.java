@@ -18,12 +18,12 @@ import java.time.LocalDateTime;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CreateOrderResponse {
     private Integer id;
-    private String pickupLoc;
+    private String pickUpLoc;
     private String dropOffLoc;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime pickupDate;
+    private LocalDateTime pickUpDate;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
-    private LocalDateTime dropoffDate;
+    private LocalDateTime dropOffDate;
     private double priceTotal;
     private Integer idCompanyCars;
     private Integer idUser;
