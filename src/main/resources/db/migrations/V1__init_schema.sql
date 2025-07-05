@@ -99,6 +99,7 @@ CREATE TABLE company_cars (
     id_car INT,
     price INT,
     id_car_type INT UNIQUE,
+    status VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP,
     CONSTRAINT fk_car_types FOREIGN KEY (id_car_type) REFERENCES car_types (id),
