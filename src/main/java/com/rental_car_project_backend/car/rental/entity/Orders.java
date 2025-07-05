@@ -35,7 +35,7 @@ public class Orders {
     private Integer idCompanyCars;
     @Column(name = "id_user")
     private Integer idUser;
-    @Column(name = "id_status")
+    @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
     @Column(name = "created_at")
