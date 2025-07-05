@@ -1,4 +1,0 @@
-ALTER TABLE users ADD COLUMN id_city INT;
-
-ALTER TABLE users
-ADD CONSTRAINT fk_city FOREIGN KEY (id_city) REFERENCES cities(id);

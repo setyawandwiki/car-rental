@@ -1,5 +1,6 @@
 package com.rental_car_project_backend.car.rental.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.rental_car_project_backend.car.rental.enums.OrderStatus;
@@ -18,15 +19,17 @@ import java.time.LocalDateTime;
 public class CreateOrderResponse {
     private Integer id;
     private String pickupLoc;
-    private String dropoff_loc;
+    private String dropOffLoc;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime pickupDate;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime dropoffDate;
     private double priceTotal;
     private Integer idCompanyCars;
     private Integer idUser;
     private OrderStatus status;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime createdAt;
-    private LocalDateTime updatedate;
     private GetCarResponse carResponse;
     private GetCompanyResponse companyResponse;
 }

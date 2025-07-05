@@ -1,1 +1,0 @@
-INSERT INTO genders (name) VALUES ('USER'),('ADMIN')

@@ -1,1 +1,0 @@
-ALTER TABLE company_cars ADD CONSTRAINT unique_id_car_type UNIQUE (id_car_type);
