@@ -23,11 +23,11 @@ public class Orders {
     private Integer id;
     @Column(name = "pickup_loc")
     private String pickupLoc;
-    @Column(name = "dropoff_loc")
+    @Column(name = "drop_off_loc")
     private String dropOffLoc;
     @Column(name = "pickup_date")
     private LocalDateTime pickupDate;
-    @Column(name = "dropoff_date")
+    @Column(name = "drop_off_date")
     private LocalDateTime dropOffDate;
     @Column(name = "price_total")
     private double priceTotal;
