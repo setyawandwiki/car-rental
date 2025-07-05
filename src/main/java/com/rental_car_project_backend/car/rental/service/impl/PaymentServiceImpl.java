@@ -27,6 +27,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentRepository paymentRepository;
     private final VendorRepository vendorRepository;
     private final CompanyCarRepository companyCarRepository;
+    private final PlatFormProfitRepository platFormProfitRepository;
     @Override
     public CreatedPaymentResponse createPayment(CreatePaymentRequest request) {
         Orders orders = orderRepository.findById(request.getOrderId())
@@ -105,6 +106,14 @@ public class PaymentServiceImpl implements PaymentService {
         Double adminFee = totalAmount * 0.1;
         Double vendorAmount = totalAmount - adminFee;
 
+        PlatFormProfit platFormProfit = PlatFormProfit.builder()
+                .profitAmount(adminFee)
+                .companyId(companyCar.getIdCompany())
+                .percentage(5.0)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        platFormProfitRepository.save(platFormProfit);
 
     }
 }
