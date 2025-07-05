@@ -19,6 +19,7 @@ public class CreateCompanyResponse {
     private String name;
     private Double rate;
     private String image;
+    private Integer idUser;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
