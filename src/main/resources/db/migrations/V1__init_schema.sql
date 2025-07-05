@@ -76,8 +76,10 @@ CREATE TABLE cars (
     name VARCHAR(255),
     seats VARCHAR(255),
     baggages INT,
-    year INT, -- ubah kolom 'year' yang tadinya pakai tanda kutip!
+    year INT,
     image VARCHAR(255),
+    location int,
+    CONSTRAINT fk_location FOREIGN KEY (location) REFERENCES cities(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP
 );
