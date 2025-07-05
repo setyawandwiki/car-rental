@@ -1,1 +1,0 @@
-ALTER TABLE orders ADD CONSTRAINT unique_id_status UNIQUE (id_status);

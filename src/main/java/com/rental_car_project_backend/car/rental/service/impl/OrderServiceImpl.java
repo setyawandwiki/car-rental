@@ -14,7 +14,6 @@ import com.rental_car_project_backend.car.rental.service.CompanyCarService;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import com.rental_car_project_backend.car.rental.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +31,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public CreateOrderResponse createOrder(CreateOrderRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        if(request.getPickupDate().isBefore(LocalDateTime.now())){
+            throw new IllegalArgumentException("Pickup date cannot lower than your input");
+        }
+        if(request.getDropOffDate().isBefore(request.getPickupDate())){
+            throw new IllegalArgumentException("Pickup date cannot lower than your pick up date");
+        }
         Users user = userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException("there is no user with email " + email));
         GetCompanyCarResponse companyCar = companyCarService.findCompanyCar(request.getIdCompanyCars());
@@ -51,10 +56,9 @@ public class OrderServiceImpl implements OrderService {
         return CreateOrderResponse.builder()
                 .id(save.getId())
                 .createdAt(save.getCreatedAt())
-                .updatedate(save.getUpdatedAt())
                 .carResponse(car)
                 .companyResponse(company)
-                .dropoff_loc(save.getDropOffLoc())
+                .dropOffLoc(save.getDropOffLoc())
                 .pickupDate(save.getPickupDate())
                 .dropoffDate(save.getDropOffDate())
                 .dropoffDate(save.getPickupDate())

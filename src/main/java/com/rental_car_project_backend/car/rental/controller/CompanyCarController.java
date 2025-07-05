@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -22,6 +23,7 @@ public class CompanyCarController {
     private final CompanyCarService companyCarService;
     @GetMapping
     public ResponseEntity<List<GetCompanyCarResponse>> getAllCompanyCars(){
+        System.out.println(LocalDateTime.now());
         List<GetCompanyCarResponse> companyCars = companyCarService.getCompanyCars();
         return ResponseEntity.ok().body(companyCars);
     }
