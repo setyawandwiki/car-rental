@@ -1,0 +1,2 @@
+ALTER TABLE users
+ALTER COLUMN bank_code TYPE VARCHAR(50);

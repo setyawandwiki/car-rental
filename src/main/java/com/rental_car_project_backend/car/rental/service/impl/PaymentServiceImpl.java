@@ -11,6 +11,7 @@ import com.rental_car_project_backend.car.rental.exceptions.PaymentExceptions;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.*;
 import com.rental_car_project_backend.car.rental.service.PaymentService;
+import com.xendit.exception.XenditException;
 import com.xendit.model.Disbursement;
 import com.xendit.model.Invoice;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final CompanyCarRepository companyCarRepository;
     private final PlatFormProfitRepository platFormProfitRepository;
     private final CompanyRepository companyRepository;
+
     @Override
     public CreatedPaymentResponse createPayment(CreatePaymentRequest request) {
         Orders orders = orderRepository.findById(request.getOrderId())
@@ -92,7 +94,7 @@ public class PaymentServiceImpl implements PaymentService {
         paymentRepository.save(payments);
 
         Orders orders = orderRepository.findById(payments.getOrderId())
-                .orElseThrow(() -> new PaymentExceptions("paymenot not found"));
+                .orElseThrow(() -> new PaymentExceptions("payment not found"));
 
         orders.setStatus(OrderStatus.PAID);
         orders.setUpdatedAt(LocalDateTime.now());
@@ -101,9 +103,6 @@ public class PaymentServiceImpl implements PaymentService {
         CompanyCar companyCar = companyCarRepository
                 .findByIdCompany(orders.getIdCompanyCars()).orElseThrow(() ->
                         new CompanyCarNotFoundException("Company Car not found"));
-        Vendor vendor = vendorRepository
-                .findByCompanyId(companyCar.getIdCompany()).orElseThrow(()
-                        -> new PaymentExceptions("Vendor not found "));
 
         Double totalAmount = payments.getAmount();
         Double adminFee = totalAmount * 0.1;
@@ -113,16 +112,34 @@ public class PaymentServiceImpl implements PaymentService {
         Users users = userRepository.findById(companies.getIdUser()).orElseThrow(() ->
                 new UserNotFoundException("User not found"));
 
+        Vendor vendor = vendorRepository
+                .findByCompanyId(companyCar.getIdCompany()).orElseThrow(()
+                        -> new PaymentExceptions("Vendor not found "));
+
+        vendor.setPendingWithDrawl(vendor.getPendingWithDrawl() + vendorAmount);
+        vendor.setUpdatedAt(LocalDateTime.now());
+        vendorRepository.save(vendor);
+
         PlatFormProfit platFormProfit = PlatFormProfit.builder()
                 .profitAmount(adminFee)
                 .companyId(companyCar.getIdCompany())
-                .percentage(5.0)
+                .percentage(10.0)
                 .createdAt(LocalDateTime.now())
                 .build();
-
-
-        Disbursement disbursement = Disbursement.create()
         platFormProfitRepository.save(platFormProfit);
 
+        Map<String, Object> params = new HashMap<>();
+        params.put("external_id", "DISB-"+orders.getId());
+        params.put("amount", vendorAmount);
+        params.put("bank_code", users.getBankCode());
+        params.put("account_holder_name", users.getFullName());
+        params.put("account_number", users.getAccountNumber());
+        params.put("description", "Pembayaran untuk order #" + orders.getId());
+
+        try {
+            Disbursement disbursement = Disbursement.create(params);
+        } catch (XenditException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
