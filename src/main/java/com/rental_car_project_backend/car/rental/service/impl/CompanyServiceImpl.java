@@ -8,10 +8,12 @@ import com.rental_car_project_backend.car.rental.dto.response.company.GetCompany
 import com.rental_car_project_backend.car.rental.dto.response.company.UpdateCompanyResponse;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.entity.Users;
+import com.rental_car_project_backend.car.rental.entity.Vendor;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
+import com.rental_car_project_backend.car.rental.repository.VendorRepository;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import com.rental_car_project_backend.car.rental.service.ImageUploadService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,8 @@ public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
     private final ImageUploadService imageUploadService;
     private final UserRepository userRepository;
+    private final VendorRepository vendorRepository;
+
     @Override
     public CreateCompanyResponse createCompany(CreateCompanyRequest request) throws IOException {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
@@ -49,6 +53,14 @@ public class CompanyServiceImpl implements CompanyService {
         companies.setIdUser(users.getId());
         companies.setImage(upload);
         Companies save = companyRepository.save(companies);
+
+        Vendor vendor = new Vendor();
+        vendor.setPendingWithDrawl(0.0);
+        vendor.setCompanyId(save.getId());
+        vendor.setAvailableBalance(0.0);
+
+        vendorRepository.save(vendor);
+
         return CreateCompanyResponse.builder()
                 .id(save.getId())
                 .name(save.getName())
