@@ -1,14 +1,12 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
+import com.rental_car_project_backend.car.rental.dto.request.XenditDisbursementCallback;
 import com.rental_car_project_backend.car.rental.dto.request.payment.CreatePaymentRequest;
 import com.rental_car_project_backend.car.rental.dto.request.payment.PaymentNotificationRequest;
 import com.rental_car_project_backend.car.rental.dto.response.payment.CreatedPaymentResponse;
 import com.rental_car_project_backend.car.rental.entity.*;
 import com.rental_car_project_backend.car.rental.enums.OrderStatus;
-import com.rental_car_project_backend.car.rental.exceptions.CompanyCarNotFoundException;
-import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
-import com.rental_car_project_backend.car.rental.exceptions.PaymentExceptions;
-import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
+import com.rental_car_project_backend.car.rental.exceptions.*;
 import com.rental_car_project_backend.car.rental.repository.*;
 import com.rental_car_project_backend.car.rental.service.PaymentService;
 import com.xendit.exception.XenditException;
@@ -141,5 +139,27 @@ public class PaymentServiceImpl implements PaymentService {
         } catch (XenditException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void handleDisbursementCompleted(XenditDisbursementCallback callback) {
+        if(!"disbursement.completed".equals(callback.getEvent())) {
+            throw new PaymentExceptions("Ignored");
+        };
+
+        Integer orderId = Integer.parseInt(callback.getData().getExternalId().replace("DISB-", ""));
+        Double vendorAmount = callback.getData().getAmount().doubleValue();
+
+        Orders orders = orderRepository.findById(orderId).orElseThrow(() ->
+                new OrdersNotFoundException("Order not found with order id " + orderId));
+        CompanyCar companyCar = companyCarRepository.findById(orders.getIdCompanyCars()).orElseThrow(()
+                -> new CompanyCarNotFoundException("Company car not found"));
+        Vendor vendors = vendorRepository.findByCompanyId(companyCar.getIdCompany()).orElseThrow(() ->
+                new RuntimeException("Vendor not found"));
+        vendors.setAvailableBalance(vendors.getAvailableBalance() + vendorAmount);
+        vendors.setPendingWithDrawl(vendors.getPendingWithDrawl() - vendorAmount);
+        vendors.setUpdatedAt(LocalDateTime.now());
+
+        vendorRepository.save(vendors);
     }
 }

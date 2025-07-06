@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class XenditDisbursementCallback {
     private String event;
     private DisbursementData data;
+    @Data
     public static class DisbursementData{
         private String id;
         private String externalId;
