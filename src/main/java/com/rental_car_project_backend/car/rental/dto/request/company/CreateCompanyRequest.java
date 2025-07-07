@@ -15,6 +15,5 @@ public class CreateCompanyRequest {
     @Size(min = 3, max = 100, message = "min name 3 character and max name 100 character")
     private String name;
     private Double rate = 3.5;
-    private Integer idUser;
     private MultipartFile imageFile;
 }

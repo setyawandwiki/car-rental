@@ -86,13 +86,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<GetOrderResponse> getOrderResponse() {
-        System.out.println("test 1");
+        System.out.println("TESTING");
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException("there is no user with email " + email));
-        System.out.println("test 2" + user);
         List<Orders> orders = orderRepository.userOrders(user.getId());
-        System.out.println(orders.size());
         return orders.stream().map(val -> {
             GetOrderResponse orders1 = new GetOrderResponse();
             orders1.setIdCompanyCars(val.getIdCompanyCars());
