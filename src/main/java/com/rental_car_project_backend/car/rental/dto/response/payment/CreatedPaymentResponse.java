@@ -22,6 +22,7 @@ public class CreatedPaymentResponse {
     private String externalId;
     private OrderStatus orderStatus;
     private Double amount;
+    private String invoiceUrl;
     private LocalDateTime paidAt;
     private LocalDateTime createdAt;
 }

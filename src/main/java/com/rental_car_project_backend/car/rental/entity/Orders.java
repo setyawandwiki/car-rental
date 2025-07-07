@@ -30,7 +30,7 @@ public class Orders {
     @Column(name = "drop_off_date")
     private LocalDateTime dropOffDate;
     @Column(name = "price_total")
-    private double priceTotal;
+    private Double priceTotal;
     @Column(name = "id_company_cars")
     private Integer idCompanyCars;
     @Column(name = "id_user")

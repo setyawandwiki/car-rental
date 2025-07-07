@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payments, Integer> {
     @Query(value = """
-            SELECT p FROM payments p WHERE p.external_id = :id
+            SELECT p.* FROM payments p WHERE p.external_id = :external_id
             """, nativeQuery = true)
-    Optional<Payments> findByExternalId(@Param("id") Integer id);
+    Optional<Payments> findByExternalId(@Param("external_id") String externalId);
 }

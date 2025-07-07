@@ -1,18 +1,18 @@
 package com.rental_car_project_backend.car.rental.config;
 
-import com.xendit.XenditClient;
+import com.xendit.Xendit;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class XenditConfig {
     @Value("${xendit.api-key}")
     private String apiKey;
-    @Bean
-    XenditClient config(){
-        return new XenditClient.Builder()
-                .setApikey(apiKey)
-                .build();
+
+    @PostConstruct
+    public void init() {
+        Xendit.apiKey = apiKey;
+        System.out.println("✅ Xendit API key configured");
     }
 }

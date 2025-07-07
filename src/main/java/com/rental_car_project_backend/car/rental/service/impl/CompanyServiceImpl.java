@@ -16,6 +16,7 @@ import com.rental_car_project_backend.car.rental.repository.UserRepository;
 import com.rental_car_project_backend.car.rental.repository.VendorRepository;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import com.rental_car_project_backend.car.rental.service.ImageUploadService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class CompanyServiceImpl implements CompanyService {
     private final VendorRepository vendorRepository;
 
     @Override
+    @Transactional
     public CreateCompanyResponse createCompany(CreateCompanyRequest request) throws IOException {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){
@@ -58,7 +60,6 @@ public class CompanyServiceImpl implements CompanyService {
         vendor.setPendingWithDrawl(0.0);
         vendor.setCompanyId(save.getId());
         vendor.setAvailableBalance(0.0);
-
         vendorRepository.save(vendor);
 
         return CreateCompanyResponse.builder()

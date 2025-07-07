@@ -44,7 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
         params.put("payer_email", user.getEmail());
         params.put("currency", "IDR");
         params.put("invoice_duration", 86400);
-        params.put("amount", orders.getPriceTotal());
+        params.put("amount", orders.getPriceTotal().intValue());
 
         Invoice invoice;
         try{
@@ -61,7 +61,6 @@ public class PaymentServiceImpl implements PaymentService {
                 .orderStatus(OrderStatus.PENDING)
                 .invoiceId(invoice.getId())
                 .build();
-
         paymentRepository.save(payments);
         return CreatedPaymentResponse.builder()
                 .id(payments.getId())
@@ -71,17 +70,20 @@ public class PaymentServiceImpl implements PaymentService {
                 .createdAt(payments.getCreatedAt())
                 .externalId(payments.getExternalId())
                 .orderStatus(payments.getOrderStatus())
+                .invoiceUrl(invoice.getInvoiceUrl())
                 .paidAt(payments.getPaidAt())
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 
     @Override
     public void handlePaymentNotification(PaymentNotificationRequest request) {
         if (OrderStatus.PAID != (request.getStatus())) return;
+
         Payments payments = paymentRepository
-                .findByExternalId(request.getId())
+                .findByExternalId(request.getExternalId())
                 .orElseThrow(() ->
-                        new PaymentExceptions("Payment not found with id " + request.getPaymentId()));
+                        new PaymentExceptions("Payment not found with id " + request.getExternalId()));
 
         if(OrderStatus.PAID == payments.getOrderStatus()){
             return;
@@ -99,7 +101,7 @@ public class PaymentServiceImpl implements PaymentService {
         orderRepository.save(orders);
 
         CompanyCar companyCar = companyCarRepository
-                .findByIdCompany(orders.getIdCompanyCars()).orElseThrow(() ->
+                .findById(orders.getIdCompanyCars()).orElseThrow(() ->
                         new CompanyCarNotFoundException("Company Car not found"));
 
         Double totalAmount = payments.getAmount();
@@ -122,46 +124,48 @@ public class PaymentServiceImpl implements PaymentService {
                 .profitAmount(adminFee)
                 .companyId(companyCar.getIdCompany())
                 .percentage(10.0)
+                .orderId(orders.getId())
                 .createdAt(LocalDateTime.now())
                 .build();
         platFormProfitRepository.save(platFormProfit);
 
         Map<String, Object> params = new HashMap<>();
         params.put("external_id", "DISB-"+orders.getId());
-        params.put("amount", vendorAmount);
+        params.put("amount", vendorAmount.intValue());
         params.put("bank_code", users.getBankCode());
         params.put("account_holder_name", users.getFullName());
         params.put("account_number", users.getAccountNumber());
-        params.put("description", "Pembayaran untuk order #" + orders.getId());
+        Disbursement disbursement;
 
         try {
-            Disbursement disbursement = Disbursement.create(params);
+             disbursement = Disbursement.create(params);
         } catch (XenditException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("invoice completed");
     }
 
     @Override
     public void handleDisbursementCompleted(XenditDisbursementCallback callback) {
-        if(!"disbursement.completed".equals(callback.getEvent())) {
-            throw new PaymentExceptions("Ignored");
-        };
+        System.out.println(callback);
 
-        Integer orderId = Integer.parseInt(callback.getData().getExternalId().replace("DISB-", ""));
-        Double vendorAmount = callback.getData().getAmount().doubleValue();
+        if(callback == null) {
+            throw new PaymentExceptions("Invalid callback payload (data is null)");
+        }
+
+        Integer orderId = Integer.parseInt(callback.getExternalId().replace("DISB-", ""));
+        Double vendorAmount = callback.getAmount().doubleValue();
 
         Orders orders = orderRepository.findById(orderId).orElseThrow(() ->
                 new OrdersNotFoundException("Order not found with order id " + orderId));
+
         CompanyCar companyCar = companyCarRepository.findById(orders.getIdCompanyCars()).orElseThrow(()
                 -> new CompanyCarNotFoundException("Company car not found"));
+
         Vendor vendors = vendorRepository.findByCompanyId(companyCar.getIdCompany()).orElseThrow(() ->
                 new RuntimeException("Vendor not found"));
         vendors.setAvailableBalance(vendors.getAvailableBalance() + vendorAmount);
         vendors.setPendingWithDrawl(vendors.getPendingWithDrawl() - vendorAmount);
         vendors.setUpdatedAt(LocalDateTime.now());
-
         vendorRepository.save(vendors);
-        System.out.println("disbursement completed");
     }
 }
