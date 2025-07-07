@@ -1,5 +1,7 @@
 package com.rental_car_project_backend.car.rental.dto.request;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,14 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class XenditDisbursementCallback {
-    private String event;
-    private DisbursementData data;
-    @Data
-    public static class DisbursementData{
-        private String id;
-        private String externalId;
-        private String status;
-        private Long amount;
-    }
+    private String id;
+    private String externalId;
+    private String status;
+    private Long amount;
+    private Integer accountNumber;
 }

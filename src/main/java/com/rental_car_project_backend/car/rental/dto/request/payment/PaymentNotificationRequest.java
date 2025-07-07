@@ -16,13 +16,12 @@ import java.time.LocalDateTime;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PaymentNotificationRequest {
-    private Integer id;
-    private Integer externalId;
+    private String id;
+    private String externalId;
     private OrderStatus status;
     private Double amount;
     private String currency;
     private String paymentMethod;
-    private String paymentId;
     private LocalDateTime paidAt;
     private LocalDateTime createdAt;
 }

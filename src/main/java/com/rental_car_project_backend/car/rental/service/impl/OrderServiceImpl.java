@@ -86,12 +86,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<GetOrderResponse> getOrderResponse() {
-        System.out.println("TESTING");
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException("there is no user with email " + email));
         List<Orders> orders = orderRepository.userOrders(user.getId());
         return orders.stream().map(val -> {
+            GetCompanyCarResponse companyCar = companyCarService.findCompanyCar(val.getIdCompanyCars());
+            GetCarResponse car = carService.getCar(companyCar.getIdCar());
+            GetCompanyResponse company = companyService.findCompany(companyCar.getIdCompany());
             GetOrderResponse orders1 = new GetOrderResponse();
             orders1.setIdCompanyCars(val.getIdCompanyCars());
             orders1.setStatus(val.getStatus());
@@ -104,6 +106,8 @@ public class OrderServiceImpl implements OrderService {
             orders1.setUpdateAt(val.getUpdatedAt());
             orders1.setId(val.getId());
             orders1.setPriceTotal(val.getPriceTotal());
+            orders1.setCarResponse(car);
+            orders1.setCompanyResponse(company);
             return orders1;
         }).toList();
     }

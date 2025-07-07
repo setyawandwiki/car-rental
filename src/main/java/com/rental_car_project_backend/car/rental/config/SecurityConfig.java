@@ -77,8 +77,9 @@ public class SecurityConfig {
                                 .hasAnyAuthority("USER")
                                 .requestMatchers(HttpMethod.GET, "/payments")
                                 .hasAnyAuthority("USER")
+                                .requestMatchers("/payments/webhook/**").permitAll()
                                 .anyRequest()
-                                .authenticated())
+                                .permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->

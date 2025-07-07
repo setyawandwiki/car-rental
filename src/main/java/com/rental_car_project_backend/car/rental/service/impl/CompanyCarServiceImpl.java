@@ -33,7 +33,6 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     private final CarRepository carRepository;
     @Override
     public CreateCompanyCarResponse createCompanyCar(CreateCompanyCarRequest request) {
-        System.out.println(request);
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){
             throw new SecurityException("You must logged in first!");
