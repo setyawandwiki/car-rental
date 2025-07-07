@@ -13,5 +13,5 @@ public interface OrderRepository extends JpaRepository<Orders, Integer> {
     @Query(value = """
             SELECT o.* FROM orders o WHERE o.id_user = :id 
             """, nativeQuery = true)
-    List<Orders> userOrders(@Param("email") Integer id);
+    List<Orders> userOrders(@Param("id") Integer id);
 }

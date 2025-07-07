@@ -139,6 +139,7 @@ public class PaymentServiceImpl implements PaymentService {
         } catch (XenditException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("invoice completed");
     }
 
     @Override
@@ -161,5 +162,6 @@ public class PaymentServiceImpl implements PaymentService {
         vendors.setUpdatedAt(LocalDateTime.now());
 
         vendorRepository.save(vendors);
+        System.out.println("disbursement completed");
     }
 }

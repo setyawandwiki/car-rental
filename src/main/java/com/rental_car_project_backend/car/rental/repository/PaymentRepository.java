@@ -2,9 +2,14 @@ package com.rental_car_project_backend.car.rental.repository;
 
 import com.rental_car_project_backend.car.rental.entity.Payments;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
 public interface PaymentRepository extends JpaRepository<Payments, Integer> {
-    Optional<Payments> findByExternalId(Integer id);
+    @Query(value = """
+            SELECT p FROM payments p WHERE p.external_id = :id
+            """, nativeQuery = true)
+    Optional<Payments> findByExternalId(@Param("id") Integer id);
 }
