@@ -2,6 +2,8 @@ package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.car.CreateCarRequest;
 import com.rental_car_project_backend.car.rental.dto.request.car.UpdateCarRequest;
+import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
+import com.rental_car_project_backend.car.rental.dto.request.page.SearchRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.response.car.CreateCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.car.DeleteCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.car.GetCarResponse;
@@ -11,13 +13,23 @@ import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException
 import com.rental_car_project_backend.car.rental.repository.CarRepository;
 import com.rental_car_project_backend.car.rental.service.CarService;
 import com.rental_car_project_backend.car.rental.service.ImageUploadService;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -77,20 +89,35 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
-    public List<GetCarResponse> getCars() {
-        List<Cars> all = carRepository.findAll();
-        return all.stream()
-                .map(car -> GetCarResponse.builder()
-                        .id(car.getId())
-                        .name(car.getName())
-                        .year(car.getYear())
-                        .seats(car.getSeats())
-                        .image(car.getImage())
-                        .baggages(car.getBaggages())
-                        .createdAt(car.getCreatedAt())
-                        .updatedAt(car.getUpdatedAt())
-                        .build())
-                .collect(Collectors.toList());
+    public Page<GetCarResponse> getCars(SearchRequestDTO requestDTO, PageRequestDTO pageRequestDTO) {
+        List<Predicate> predicates = new ArrayList<>();
+        Specification<Cars> carsSpecification = (root,
+                                                 query,
+                                                 criteriaBuilder) -> {
+            if(Objects.nonNull(requestDTO.getValue())){
+                Predicate equal = criteriaBuilder.like(root.get("name"),
+                        "%" +requestDTO.getValue() + "%");
+                predicates.add(equal);
+            }
+            assert query != null;
+            return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
+        };
+        Sort sort = Sort.by(pageRequestDTO.getSort(), "id");
+        Pageable pageable = PageRequest.of(Integer.parseInt(pageRequestDTO
+                .getPageNo()), Integer.parseInt(pageRequestDTO.getPageSize()),
+                sort);
+        Page<Cars> all = carRepository.findAll(carsSpecification, pageable);
+        return all.map(car -> GetCarResponse.builder()
+                .id(car.getId())
+                .name(car.getName())
+                .seats(car.getSeats())
+                .baggages(car.getBaggages())
+                .year(car.getYear())
+                .image(car.getImage())
+                .createdAt(car.getCreatedAt())
+                .updatedAt(car.getUpdatedAt())
+                .build()
+        );
     }
 
     @Override

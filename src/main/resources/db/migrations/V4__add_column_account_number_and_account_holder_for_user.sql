@@ -1,3 +1,0 @@
-ALTER TABLE users
-ADD COLUMN account_number INTEGER,
-ADD COLUMN bank_code INTEGER;
