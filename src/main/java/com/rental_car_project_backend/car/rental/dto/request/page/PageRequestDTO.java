@@ -15,15 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 public class PageRequestDTO {
-    private Integer pageNo = 0;
-    private Integer pageSize = 10;
+    private String pageNo = "0";
+    private String pageSize = "10";
     private Sort.Direction sort = Sort.Direction.ASC;
-    private String sortByColumn = "id";
-    public Pageable getPageable(PageRequestDTO dto) {
-        Integer page = Objects.nonNull(dto.getPageNo()) ? dto.getPageNo() : this.pageNo;
-        Integer size = Objects.nonNull(dto.getPageSize()) ? dto.getPageSize() : this.pageSize;
-        Sort.Direction sortValue = Objects.nonNull(dto.getSort()) ? dto.getSort() : this.sort;
-        String sortedColumn = Objects.nonNull(dto.getSortByColumn()) ? dto.getSortByColumn() : this.sortByColumn;
-        return PageRequest.of(page, size, sortValue, sortedColumn);
-    }
 }

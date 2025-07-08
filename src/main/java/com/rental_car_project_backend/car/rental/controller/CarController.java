@@ -2,6 +2,8 @@ package com.rental_car_project_backend.car.rental.controller;
 
 import com.rental_car_project_backend.car.rental.dto.request.car.CreateCarRequest;
 import com.rental_car_project_backend.car.rental.dto.request.car.UpdateCarRequest;
+import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
+import com.rental_car_project_backend.car.rental.dto.request.page.SearchRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.response.car.CreateCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.car.DeleteCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.car.GetCarResponse;
@@ -9,6 +11,8 @@ import com.rental_car_project_backend.car.rental.dto.response.car.UpdateCarRespo
 import com.rental_car_project_backend.car.rental.service.CarService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,8 +42,22 @@ public class CarController {
         return ResponseEntity.status(HttpStatus.OK).body(carResponse);
     }
     @GetMapping
-    public ResponseEntity<List<GetCarResponse>> getAllCars(){
-        List<GetCarResponse> cars = carService.getCars();
+    public ResponseEntity<Page<GetCarResponse>> getAllCars(
+            @RequestParam(value = "name", defaultValue =  "", required = false) String value,
+            @RequestParam(value = "page", required = false, defaultValue = "0") String page,
+            @RequestParam(value = "sort", defaultValue = "ASC", required = false) Sort.Direction sort,
+            @RequestParam(value = "size", required = false, defaultValue = "10") String size
+    ){
+        SearchRequestDTO requestDTO = SearchRequestDTO.builder()
+                .value(value)
+                .build();
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .pageNo(page)
+                .pageSize(size)
+                .sort(sort)
+                .sortByColumn("id")
+                .build();
+        Page<GetCarResponse> cars = carService.getCars(requestDTO, pageRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(cars);
     }
     @DeleteMapping(path = "/{id}")

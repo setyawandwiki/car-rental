@@ -49,6 +49,8 @@ CREATE TABLE users (
     id_address INT,
     id_role INT,
     id_city INT,
+    account_number VARCHAR(50),
+    bank_code VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP,
     CONSTRAINT fk_gender FOREIGN KEY (id_gender) REFERENCES genders(id),
@@ -86,10 +88,12 @@ CREATE TABLE cars (
 
 CREATE TABLE companies (
     id BIGSERIAL PRIMARY KEY,
+    id_user BIGSERIAL,
     name VARCHAR(255),
     rate INT,
     image VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CONSTRAINT fk_user FOREIGN KEY (id_user) REFERENCES users(id),
     updated_at TIMESTAMP
 );
 
@@ -171,3 +175,12 @@ CREATE TABLE payments(
 );
 
 INSERT INTO roles (name) VALUES ('USER'),('ADMIN');
+
+INSERT INTO countries(name) VALUES ('Indonesia');
+
+INSERT INTO cities (id_country, name) VALUES (1, 'Bogor'),
+(1, 'Jakarta'),
+(1, 'Cibinong'),
+(1, 'Cibubur');
+
+INSERT INTO car_types (name) VALUES ('Automatic'), ('Manual');
