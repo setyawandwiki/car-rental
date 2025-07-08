@@ -1,4 +1,4 @@
-package com.rental_car_project_backend.car.rental.dto.request;
+package com.rental_car_project_backend.car.rental.dto.request.payment;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
