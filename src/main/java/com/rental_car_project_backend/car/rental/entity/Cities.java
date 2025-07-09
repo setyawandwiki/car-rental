@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Table(name = "cities")
 @Entity
@@ -24,6 +25,8 @@ public class Cities {
     private Integer idCountry;
     @Column(name = "name")
     private String name;
+    @OneToMany(mappedBy = "city")
+    private List<Users> users;
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
