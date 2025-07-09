@@ -18,4 +18,5 @@ public class PageRequestDTO {
     private String pageNo = "0";
     private String pageSize = "10";
     private Sort.Direction sort = Sort.Direction.ASC;
+    private String sortColumn = "id";
 }

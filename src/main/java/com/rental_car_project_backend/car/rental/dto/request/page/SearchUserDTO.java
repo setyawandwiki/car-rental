@@ -13,10 +13,9 @@ import java.util.Date;
 @Builder
 public class SearchUserDTO {
     private String fullName;
-    private Integer idCity;
+    private String city;
     private String email;
     private String phoneNumber;
     private String accountNumber;
     private String bankCode;
-    private Integer idRole;
 }
