@@ -26,7 +26,7 @@ public class Cities {
     @Column(name = "name")
     private String name;
     @OneToMany(mappedBy = "city")
-    private List<Users> users;
+    private List<Address> addresses;
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;

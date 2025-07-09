@@ -23,11 +23,6 @@ public class Users {
     private Integer id;
     @Column(name = "full_name")
     private String fullName;
-    @Column(name = "id_city")
-    private Integer idCity;
-    @ManyToOne
-    @JoinColumn(name = "id_city", insertable = false, updatable = false)
-    private Cities city;
     @Column(name = "birth_date")
     private Date birthDate;
     @Column(name = "email")

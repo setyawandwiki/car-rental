@@ -21,7 +21,6 @@ import java.util.Date;
 public class UserResponse {
     private Integer id;
     private String fullName;
-    private Integer idCity;
     private Date birthDate;
     private String email;
     private String phoneNumber;

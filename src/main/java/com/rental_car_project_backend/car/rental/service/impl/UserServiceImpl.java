@@ -69,7 +69,6 @@ public class UserServiceImpl implements UserService {
                 .updatedAt(val.getUpdatedAt())
                 .email(val.getEmail())
                 .fullName(val.getFullName())
-                .idCity(val.getIdCity())
                 .idRole(val.getIdRole())
                 .phoneNumber(val.getPhoneNumber())
                 .build());
