@@ -25,6 +25,7 @@ CREATE TABLE address (
     id BIGSERIAL PRIMARY KEY,
     address VARCHAR(255),
     id_city INT,
+    status VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP,
     CONSTRAINT fk_city FOREIGN KEY (id_city) REFERENCES cities(id)
@@ -48,13 +49,11 @@ CREATE TABLE users (
     id_gender INT,
     id_address INT,
     id_role INT,
-    id_city INT,
     account_number VARCHAR(50),
     bank_code VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP,
     CONSTRAINT fk_gender FOREIGN KEY (id_gender) REFERENCES genders(id),
-    CONSTRAINT fk_city FOREIGN KEY (id_city) REFERENCES cities(id),
     CONSTRAINT fk_address FOREIGN KEY (id_address) REFERENCES address(id),
     CONSTRAINT fk_roles FOREIGN KEY (id_role) REFERENCES roles(id)
 );
