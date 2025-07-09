@@ -2,16 +2,15 @@ package com.rental_car_project_backend.car.rental.controller;
 
 import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.request.page.SearchUserDTO;
+import com.rental_car_project_backend.car.rental.dto.request.user.UpdateUserRequest;
+import com.rental_car_project_backend.car.rental.dto.response.user.UpdateUserResponse;
 import com.rental_car_project_backend.car.rental.dto.response.user.UserResponse;
 import com.rental_car_project_backend.car.rental.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/users")
@@ -46,5 +45,10 @@ public class UserController {
                 .build();
         Page<UserResponse> allUsers = userService.getAllUsers(page, searchUserDTO);
         return ResponseEntity.ok(allUsers);
+    }
+    @PutMapping(path = "/update")
+    public ResponseEntity<UpdateUserResponse> updateUser(@RequestBody UpdateUserRequest request){
+        UpdateUserResponse updateUserResponse = userService.updateUser(request);
+        return ResponseEntity.ok().body(updateUserResponse);
     }
 }
