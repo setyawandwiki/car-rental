@@ -2,12 +2,14 @@ package com.rental_car_project_backend.car.rental.controller;
 
 import com.rental_car_project_backend.car.rental.dto.request.company_car.CreateCompanyCarRequest;
 import com.rental_car_project_backend.car.rental.dto.request.company_car.UpdateCompanyCarRequest;
+import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.CreateCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.DeleteCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.UpdateCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,9 +22,14 @@ import java.util.List;
 public class CompanyCarController {
     private final CompanyCarService companyCarService;
     @GetMapping
-    public ResponseEntity<List<GetCompanyCarResponse>> getAllCompanyCars(){
-        System.out.println(LocalDateTime.now());
-        List<GetCompanyCarResponse> companyCars = companyCarService.getCompanyCars();
+    public ResponseEntity<Page<GetCompanyCarResponse>> getAllCompanyCars(
+            @RequestParam(name = "pageNo", defaultValue = "0", required = false) String pageNo,
+            @RequestParam(name = "pageSize", defaultValue = "10", required = false) String pageSize){
+        PageRequestDTO build = PageRequestDTO.builder()
+                .pageSize(pageSize)
+                .pageNo(pageNo)
+                .build();
+        Page<GetCompanyCarResponse> companyCars = companyCarService.getCompanyCars(build);
         return ResponseEntity.ok().body(companyCars);
     }
     @GetMapping(path = "/{id}")
