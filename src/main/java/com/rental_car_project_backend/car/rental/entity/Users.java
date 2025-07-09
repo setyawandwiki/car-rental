@@ -10,6 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Table(name = "users")
 @Entity
@@ -31,8 +32,8 @@ public class Users {
     private String phoneNumber;
     @Column(name = "password")
     private String password;
-    @Column(name = "id_address")
-    private Integer idAddress;
+    @OneToMany(mappedBy = "users")
+    private List<Address> addresses;
     @Column(name = "account_number")
     private String accountNumber;
     @Column(name = "bank_code")

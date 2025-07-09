@@ -23,11 +23,17 @@ public class Address {
     private Integer id;
     @Column(name = "address")
     private String address;
+    @Column(name = "id_user")
+    private Integer idUSer;
     @Column(name = "id_city")
     private Integer idCity;
     @ManyToOne
     @JoinColumn(name = "id_city", insertable = false, updatable = false)
     private Cities city;
+    @ManyToOne
+    @JoinColumn(name = "id_user", insertable = false, updatable = false)
+    private Users users;
+    @Column(name = "status")
     private AddressStatus status;
     @Column(name = "created_at")
     @CreationTimestamp
