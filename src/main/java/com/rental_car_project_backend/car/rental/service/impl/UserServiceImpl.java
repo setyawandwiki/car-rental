@@ -2,11 +2,14 @@ package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.request.page.SearchUserDTO;
+import com.rental_car_project_backend.car.rental.dto.request.user.UpdateUserRequest;
+import com.rental_car_project_backend.car.rental.dto.response.user.UpdateUserResponse;
 import com.rental_car_project_backend.car.rental.dto.response.user.UserResponse;
 import com.rental_car_project_backend.car.rental.entity.Address;
 import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.entity.Cities;
 import com.rental_car_project_backend.car.rental.entity.Users;
+import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
 import com.rental_car_project_backend.car.rental.service.UserService;
 import jakarta.persistence.criteria.Join;
@@ -18,9 +21,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.criteria.Predicate;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -79,5 +84,43 @@ public class UserServiceImpl implements UserService {
                 .idRole(val.getIdRole())
                 .phoneNumber(val.getPhoneNumber())
                 .build());
+    }
+
+    @Override
+    public UpdateUserResponse updateUser(UpdateUserRequest request) {
+        boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+        if(!authenticated){
+            throw new SecurityException("You must logged in first!");
+        }
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users users = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("User not found with email " + email));
+        if(Objects.nonNull(request.getAccountNumber())){
+            users.setAccountNumber(request.getAccountNumber());
+        }
+        if(Objects.nonNull(request.getBankCode())){
+            users.setBankCode(request.getBankCode());
+        }
+        if(Objects.nonNull(request.getBirthDate())){
+            users.setBirthDate(request.getBirthDate());
+        }
+        if(Objects.nonNull(request.getFullName())){
+            users.setFullName(request.getFullName());
+        }
+        if(Objects.nonNull(request.getPhoneNumber())){
+            users.setPhoneNumber(request.getAccountNumber());
+        }
+        users.setUpdatedAt(LocalDateTime.now());
+        Users save = userRepository.save(users);
+        return UpdateUserResponse.builder()
+                .accountNumber(save.getAccountNumber())
+                .birthDate(save.getBirthDate())
+                .phoneNumber(save.getPhoneNumber())
+                .bankCode(save.getBankCode())
+                .id(save.getId())
+                .createdAt(save.getCreatedAt())
+                .email(save.getEmail())
+                .fullName(save.getFullName())
+                .build();
     }
 }
