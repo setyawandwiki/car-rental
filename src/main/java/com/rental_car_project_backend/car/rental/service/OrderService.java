@@ -11,7 +11,6 @@ import java.util.List;
 
 public interface OrderService {
     CreateOrderResponse createOrder(CreateOrderRequest request);
-    List<GetOrderResponse> getOrderResponse();
     DeleteOrderResponse deleteOrder(Integer id);
     Page<GetOrderResponse> getUserOrders(PageRequestDTO pageRequestDTO);
 }
