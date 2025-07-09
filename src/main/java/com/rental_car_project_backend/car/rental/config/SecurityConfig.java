@@ -39,6 +39,8 @@ public class SecurityConfig {
                         request
                                 .requestMatchers("/auth/**")
                                 .permitAll()
+                                .requestMatchers(HttpMethod.GET, "/users")
+                                .hasAnyAuthority("SUPER_ADMIN")
                                 .requestMatchers(HttpMethod.POST, "/car")
                                 .hasAnyAuthority("ADMIN", "SUPERADMIN")
                                 .requestMatchers(HttpMethod.DELETE,"/car/**")
