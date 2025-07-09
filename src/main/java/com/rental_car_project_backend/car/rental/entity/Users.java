@@ -1,7 +1,6 @@
 package com.rental_car_project_backend.car.rental.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +25,9 @@ public class Users {
     private String fullName;
     @Column(name = "id_city")
     private Integer idCity;
+    @ManyToOne
+    @JoinColumn(name = "id_city", insertable = false, updatable = false)
+    private Cities city;
     @Column(name = "birth_date")
     private Date birthDate;
     @Column(name = "email")

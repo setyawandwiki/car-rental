@@ -55,7 +55,7 @@ public class CarController {
                 .pageNo(page)
                 .pageSize(size)
                 .sort(sort)
-                .sortByColumn("id")
+                .sortColumn("id")
                 .build();
         Page<GetCarResponse> cars = carService.getCars(requestDTO, pageRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(cars);

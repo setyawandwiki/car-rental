@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 public class SearchUserDTO {
     private String fullName;
-    private String city;
+    private String cityName;
     private String email;
     private String phoneNumber;
     private String accountNumber;

@@ -3,6 +3,7 @@ package com.rental_car_project_backend.car.rental.service.impl;
 import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.request.page.SearchUserDTO;
 import com.rental_car_project_backend.car.rental.dto.response.user.UserResponse;
+import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
 import com.rental_car_project_backend.car.rental.service.UserService;
@@ -31,29 +32,33 @@ public class UserServiceImpl implements UserService {
                 userSpecification = (root, query, criteriaBuilder) -> {
             if(Objects.nonNull(searchUserDTO.getFullName())){
                 Predicate fullName = criteriaBuilder
-                        .like(root.get("fullName"), "%" + searchUserDTO.getFullName() + "%");
+                        .like(criteriaBuilder.lower(root.get("fullName")), "%" +
+                                searchUserDTO.getFullName().toLowerCase() + "%");
                 predicates.add(fullName);
             }
             if(Objects.nonNull(searchUserDTO.getEmail())){
-                Predicate email = criteriaBuilder.like(root.get("email"), searchUserDTO.getEmail());
+                Predicate email = criteriaBuilder.like(criteriaBuilder.lower(root.get("email")),
+                        "%" + searchUserDTO.getEmail().toLowerCase() + "%");
                 predicates.add(email);
             }
             if(Objects.nonNull(searchUserDTO.getAccountNumber())){
-                Predicate accountNumber = criteriaBuilder.equal(root.get("accountNumber"), searchUserDTO.getAccountNumber());
+                Predicate accountNumber = criteriaBuilder.equal(root.get("accountNumber"),
+                        searchUserDTO.getAccountNumber());
                 predicates.add(accountNumber);
             }
-            if(Objects.nonNull(searchUserDTO.getCity())){
-                Predicate city = criteriaBuilder.like(root.join("idCity").get("name"), searchUserDTO.getCity());
+            if(Objects.nonNull(searchUserDTO.getCityName())){
+                Predicate city = criteriaBuilder.like(criteriaBuilder
+                                .lower(root.join("city").get("name")),
+                        "%" + searchUserDTO.getCityName() + "%");
                 predicates.add(city);
             }
             assert query != null;
             return query.where(criteriaBuilder.and(predicates.toArray(new Predicate[]{}))).getRestriction();
         };
-
         Sort sort = Sort.by(pageRequestDTO.getSort(), pageRequestDTO.getSortColumn());
-        Pageable pageable =
-                PageRequest.of(Integer.parseInt(pageRequestDTO.getPageNo()),
-                        Integer.parseInt(pageRequestDTO.getPageSize()), sort);
+        Pageable pageable = PageRequest.of(Integer.parseInt(pageRequestDTO
+                        .getPageNo()), Integer.parseInt(pageRequestDTO.getPageSize()),
+                sort);
         Page<Users> all = userRepository.findAll(userSpecification, pageable);
         return all.map(val -> UserResponse.builder()
                 .id(val.getId())
