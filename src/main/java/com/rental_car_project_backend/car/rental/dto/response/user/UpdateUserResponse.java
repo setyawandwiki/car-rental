@@ -1,5 +1,7 @@
 package com.rental_car_project_backend.car.rental.dto.response.user;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.rental_car_project_backend.car.rental.entity.Address;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class UpdateUserResponse {
     private Integer id;
     private String fullName;

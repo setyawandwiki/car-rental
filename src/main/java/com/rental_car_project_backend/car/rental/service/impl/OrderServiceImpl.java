@@ -1,6 +1,7 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.order.CreateOrderRequest;
+import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.response.car.GetCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company.GetCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
@@ -19,6 +20,10 @@ import com.rental_car_project_backend.car.rental.service.CompanyCarService;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import com.rental_car_project_backend.car.rental.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -132,4 +137,35 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
+    @Override
+    public Page<GetOrderResponse> getUserOrders(PageRequestDTO pageRequestDTO) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException("there is no user with email " + email));
+        Sort sort = Sort.by(pageRequestDTO.getSort(), "created_at");
+        Pageable pageRequest = PageRequest
+                .of(Integer.parseInt(pageRequestDTO.getPageNo()), Integer.parseInt(pageRequestDTO.getPageSize()), sort);
+        Page<Orders> orders = orderRepository.userOrders(user.getId(), pageRequest);
+        return orders.map(val -> {
+            GetCompanyCarResponse companyCar = companyCarService.findCompanyCar(val.getIdCompanyCars());
+            GetCarResponse car = carService.getCar(companyCar.getIdCar());
+            GetCompanyResponse company = companyService.findCompany(companyCar.getIdCompany());
+            GetOrderResponse orders1 = new GetOrderResponse();
+            orders1.setIdCompanyCars(val.getIdCompanyCars());
+            orders1.setStatus(val.getStatus());
+            orders1.setIdUser(val.getIdUser());
+            orders1.setCreatedAt(val.getCreatedAt());
+            orders1.setDropoff_loc(val.getDropOffLoc());
+            orders1.setPickupLoc(val.getPickupLoc());
+            orders1.setDropoffDate(val.getDropOffDate());
+            orders1.setPickupDate(val.getPickupDate());
+            orders1.setUpdateAt(val.getUpdatedAt());
+            orders1.setId(val.getId());
+            orders1.setPriceTotal(val.getPriceTotal());
+            orders1.setCarResponse(car);
+            orders1.setCompanyResponse(company);
+
+            return orders1;
+        });
+    }
 }
