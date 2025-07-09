@@ -1,11 +1,13 @@
 package com.rental_car_project_backend.car.rental.controller;
 
 import com.rental_car_project_backend.car.rental.dto.request.order.CreateOrderRequest;
+import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.response.order.CreateOrderResponse;
 import com.rental_car_project_backend.car.rental.dto.response.order.DeleteOrderResponse;
 import com.rental_car_project_backend.car.rental.dto.response.order.GetOrderResponse;
 import com.rental_car_project_backend.car.rental.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +25,15 @@ public class OrderController {
         return ResponseEntity.status(HttpStatus.CREATED).body(order);
     }
     @GetMapping
-    public ResponseEntity<List<GetOrderResponse>> getOrderUser(){
-        List<GetOrderResponse> orderResponse = orderService.getOrderResponse();
+    public ResponseEntity<Page<GetOrderResponse>> getOrderUser(
+            @RequestParam(name = "pageNo", defaultValue = "0", required = false) String pageNo,
+            @RequestParam(name = "pageSize", defaultValue = "10", required = false) String pageSize)
+    {
+        PageRequestDTO page = PageRequestDTO.builder()
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .build();
+        Page<GetOrderResponse> orderResponse = orderService.getUserOrders(page);
         return ResponseEntity.ok().body(orderResponse);
     }
     @DeleteMapping(path = "/{id}")

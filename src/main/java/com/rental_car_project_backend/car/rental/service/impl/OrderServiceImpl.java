@@ -90,34 +90,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<GetOrderResponse> getOrderResponse() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Users user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("there is no user with email " + email));
-        List<Orders> orders = orderRepository.userOrders(user.getId());
-        return orders.stream().map(val -> {
-            GetCompanyCarResponse companyCar = companyCarService.findCompanyCar(val.getIdCompanyCars());
-            GetCarResponse car = carService.getCar(companyCar.getIdCar());
-            GetCompanyResponse company = companyService.findCompany(companyCar.getIdCompany());
-            GetOrderResponse orders1 = new GetOrderResponse();
-            orders1.setIdCompanyCars(val.getIdCompanyCars());
-            orders1.setStatus(val.getStatus());
-            orders1.setIdUser(val.getIdUser());
-            orders1.setCreatedAt(val.getCreatedAt());
-            orders1.setDropoff_loc(val.getDropOffLoc());
-            orders1.setPickupLoc(val.getPickupLoc());
-            orders1.setDropoffDate(val.getDropOffDate());
-            orders1.setPickupDate(val.getPickupDate());
-            orders1.setUpdateAt(val.getUpdatedAt());
-            orders1.setId(val.getId());
-            orders1.setPriceTotal(val.getPriceTotal());
-            orders1.setCarResponse(car);
-            orders1.setCompanyResponse(company);
-            return orders1;
-        }).toList();
-    }
-
-    @Override
     public DeleteOrderResponse deleteOrder(Integer id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userRepository.findByEmail(email).orElseThrow(() ->
