@@ -21,16 +21,6 @@ CREATE TABLE genders (
     updated_at TIMESTAMP
 );
 
-CREATE TABLE address (
-    id BIGSERIAL PRIMARY KEY,
-    address VARCHAR(255),
-    id_city INT,
-    status VARCHAR(50),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at TIMESTAMP,
-    CONSTRAINT fk_city FOREIGN KEY (id_city) REFERENCES cities(id)
-);
-
 CREATE TABLE roles(
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(255),
@@ -47,15 +37,25 @@ CREATE TABLE users (
     username VARCHAR(255),
     password VARCHAR(255),
     id_gender INT,
-    id_address INT,
     id_role INT,
     account_number VARCHAR(50),
     bank_code VARCHAR(50),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP,
     CONSTRAINT fk_gender FOREIGN KEY (id_gender) REFERENCES genders(id),
-    CONSTRAINT fk_address FOREIGN KEY (id_address) REFERENCES address(id),
     CONSTRAINT fk_roles FOREIGN KEY (id_role) REFERENCES roles(id)
+);
+
+CREATE TABLE address (
+    id BIGSERIAL PRIMARY KEY,
+    address VARCHAR(255),
+    id_city INT,
+    status VARCHAR(50),
+    id_user BIGSERIAL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP,
+    CONSTRAINT fk_city FOREIGN KEY (id_city) REFERENCES cities(id),
+    CONSTRAINT fk_user FOREIGN KEY (id_user) REFERENCES users(id)
 );
 
 CREATE TABLE car_types (

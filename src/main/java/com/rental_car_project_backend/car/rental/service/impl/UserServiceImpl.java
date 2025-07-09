@@ -3,10 +3,14 @@ package com.rental_car_project_backend.car.rental.service.impl;
 import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.request.page.SearchUserDTO;
 import com.rental_car_project_backend.car.rental.dto.response.user.UserResponse;
+import com.rental_car_project_backend.car.rental.entity.Address;
 import com.rental_car_project_backend.car.rental.entity.Cars;
+import com.rental_car_project_backend.car.rental.entity.Cities;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
 import com.rental_car_project_backend.car.rental.service.UserService;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
@@ -30,25 +34,28 @@ public class UserServiceImpl implements UserService {
         List<Predicate> predicates = new ArrayList<>();
         Specification<Users>
                 userSpecification = (root, query, criteriaBuilder) -> {
-            if(Objects.nonNull(searchUserDTO.getFullName())){
+            if(searchUserDTO.getFullName() != null && !searchUserDTO.getFullName().isBlank()){
+                System.out.println("test");
                 Predicate fullName = criteriaBuilder
                         .like(criteriaBuilder.lower(root.get("fullName")), "%" +
                                 searchUserDTO.getFullName().toLowerCase() + "%");
                 predicates.add(fullName);
             }
-            if(Objects.nonNull(searchUserDTO.getEmail())){
+            if(searchUserDTO.getEmail() != null && !searchUserDTO.getEmail().isBlank()){
                 Predicate email = criteriaBuilder.like(criteriaBuilder.lower(root.get("email")),
                         "%" + searchUserDTO.getEmail().toLowerCase() + "%");
                 predicates.add(email);
             }
-            if(Objects.nonNull(searchUserDTO.getAccountNumber())){
+            if(searchUserDTO.getAccountNumber() != null && !searchUserDTO.getAccountNumber().isBlank()){
                 Predicate accountNumber = criteriaBuilder.equal(root.get("accountNumber"),
                         searchUserDTO.getAccountNumber());
                 predicates.add(accountNumber);
             }
-            if(Objects.nonNull(searchUserDTO.getCityName())){
+            if(searchUserDTO.getCityName() != null && !searchUserDTO.getCityName().isBlank()){
+                Join<Users, Address> address = root.join("addresses", JoinType.RIGHT);
+                Join<Address, Cities> city1 = address.join("city", JoinType.RIGHT);
                 Predicate city = criteriaBuilder.like(criteriaBuilder
-                                .lower(root.join("city").get("name")),
+                                .lower(city1.get("name")),
                         "%" + searchUserDTO.getCityName() + "%");
                 predicates.add(city);
             }
