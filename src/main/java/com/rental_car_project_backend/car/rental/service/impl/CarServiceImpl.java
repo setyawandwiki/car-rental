@@ -17,6 +17,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -43,6 +44,7 @@ public class CarServiceImpl implements CarService {
     private final ImageUploadService imageUploadService;
 
     @Override
+    @Transactional
     public CreateCarResponse create(CreateCarRequest request) throws IOException {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
 
@@ -140,6 +142,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Transactional
     public UpdateCarResponse updateCar(Integer id, UpdateCarRequest request) throws IOException {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){

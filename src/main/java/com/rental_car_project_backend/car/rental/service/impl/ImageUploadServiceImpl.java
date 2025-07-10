@@ -3,6 +3,7 @@ package com.rental_car_project_backend.car.rental.service.impl;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import com.rental_car_project_backend.car.rental.service.ImageUploadService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
     private static final long MAX_FILE_SIZE_KB = 1024;
 
     @Override
+    @Transactional
     public String uploadImage(MultipartFile file, String publicId, String location) throws IOException {
         String contentType = file.getContentType();
         if (contentType == null || !ALLOWED_TYPES.contains(contentType)) {
@@ -40,6 +42,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
     }
 
     @Override
+    @Transactional
     public void deleteImage(String image, String location) throws IOException {
         cloudinary.uploader().destroy(location + "/"+image, ObjectUtils.emptyMap());
     }

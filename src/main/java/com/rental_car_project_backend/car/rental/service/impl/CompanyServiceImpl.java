@@ -74,6 +74,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    @Transactional
     public UpdateCompanyResponse updateCompany(Integer id, UpdateCompanyRequest request) throws IOException {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){
@@ -110,6 +111,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
+    @Transactional
     public DeleteCompanyResponse deletecompany(Integer id) throws IOException {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){
