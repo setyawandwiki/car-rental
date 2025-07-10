@@ -19,6 +19,7 @@ import com.rental_car_project_backend.car.rental.repository.CarRepository;
 import com.rental_car_project_backend.car.rental.repository.CompanyCarRepository;
 import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +42,7 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     private final CompanyRepository companyRepository;
     private final CarRepository carRepository;
     @Override
+    @Transactional
     public CreateCompanyCarResponse createCompanyCar(CreateCompanyCarRequest request) {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){
@@ -91,6 +93,7 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     }
 
     @Override
+    @Transactional
     public DeleteCompanyCarResponse deleteCompanyCar(Integer id) {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){
@@ -108,6 +111,7 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     }
 
     @Override
+    @Transactional
     public UpdateCompanyCarResponse updateCompanyCar(Integer id, UpdateCompanyCarRequest request) {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){

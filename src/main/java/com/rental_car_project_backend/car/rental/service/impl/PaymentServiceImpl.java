@@ -12,6 +12,7 @@ import com.rental_car_project_backend.car.rental.service.PaymentService;
 import com.xendit.exception.XenditException;
 import com.xendit.model.Disbursement;
 import com.xendit.model.Invoice;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final CompanyRepository companyRepository;
 
     @Override
+    @Transactional
     public CreatedPaymentResponse createPayment(CreatePaymentRequest request) {
         Orders orders = orderRepository.findById(request.getOrderId())
                 .orElseThrow(() -> new PaymentExceptions("order with id " + request.getOrderId() + " is not found"));
@@ -77,6 +79,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public void handlePaymentNotification(PaymentNotificationRequest request) {
         if (OrderStatus.PAID != (request.getStatus())) return;
 
@@ -145,6 +148,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public void handleDisbursementCompleted(XenditDisbursementCallback callback) {
         System.out.println(callback);
 

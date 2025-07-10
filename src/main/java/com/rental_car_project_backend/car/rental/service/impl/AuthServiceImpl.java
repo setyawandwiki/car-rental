@@ -9,6 +9,7 @@ import com.rental_car_project_backend.car.rental.exceptions.UsernameAndPasswordI
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
 import com.rental_car_project_backend.car.rental.service.AuthService;
 import com.rental_car_project_backend.car.rental.service.JWTService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
     private final JWTService jwtService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
     @Override
+    @Transactional
     public RegisterResponse register(RegisterRequest request) {
         Users users = new Users();
         users.setEmail(request.getEmail());

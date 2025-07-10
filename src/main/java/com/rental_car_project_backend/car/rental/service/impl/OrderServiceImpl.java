@@ -19,6 +19,7 @@ import com.rental_car_project_backend.car.rental.service.CarService;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import com.rental_car_project_backend.car.rental.service.OrderService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final CompanyCarService companyCarService;
     @Override
+    @Transactional
     public CreateOrderResponse createOrder(CreateOrderRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         if(request.getPickupDate().isBefore(LocalDateTime.now())){
@@ -90,6 +92,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public DeleteOrderResponse deleteOrder(Integer id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userRepository.findByEmail(email).orElseThrow(() ->
@@ -110,6 +113,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public Page<GetOrderResponse> getUserOrders(PageRequestDTO pageRequestDTO) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userRepository.findByEmail(email).orElseThrow(() ->
