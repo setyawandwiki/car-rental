@@ -6,6 +6,7 @@ import com.rental_car_project_backend.car.rental.dto.response.user.LoginResponse
 import com.rental_car_project_backend.car.rental.dto.response.user.RegisterResponse;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.exceptions.UsernameAndPasswordInvalidException;
+import com.rental_car_project_backend.car.rental.repository.RoleRepository;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
 import com.rental_car_project_backend.car.rental.service.AuthService;
 import com.rental_car_project_backend.car.rental.service.JWTService;
@@ -30,6 +31,9 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     @Autowired
     private final JWTService jwtService;
+    @Autowired
+    private final RoleRepository roleRepository;
+
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
     @Override
     @Transactional
@@ -51,9 +55,13 @@ public class AuthServiceImpl implements AuthService {
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         Users users = userRepository.findByEmail(request.getEmail()).orElseThrow(() ->
                 new UsernameNotFoundException("User Not Found"));
+
+        roleRepository.findById(users.getIdRole()).orElseThrow(()-> new Reso)
         RegisterResponse userResponse = RegisterResponse.builder()
                 .email(users.getEmail())
                 .id(users.getId())
+                .name(users.getFullName())
+                .role(users.get)
                 .build();
         if(authenticate.isAuthenticated()){
             String token = jwtService.generateToken(request.getEmail());
