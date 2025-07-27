@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -32,6 +31,21 @@ public class GlobalExceptionHandler {
                 .timestamp(new Date(System.currentTimeMillis()))
                 .build();
     }
+
+    @ExceptionHandler(RoleNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse roleNotFound(HttpServletRequest request,
+                                               HttpServletResponse response,
+                                               RoleNotFoundException e){
+        log.info("something wrong with endpoint {}, with status code {}, message : {}",
+                request.getRequestURI(), response.getStatus(), e.getMessage());
+        return ErrorResponse.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .message(e.getMessage())
+                .timestamp(new Date(System.currentTimeMillis()))
+                .build();
+    }
+
     @ExceptionHandler(UsernameAndPasswordInvalidException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse usernameAndPasswordInvalid(HttpServletRequest request,
