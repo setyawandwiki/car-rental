@@ -29,25 +29,27 @@ public class CityServiceImpl implements CityService {
     private final CityRepository cityRepository;
     @Override
     public Page<GetCitiesResponse> getCities(SearchRequestDTO requestDTO, PageRequestDTO pageRequestDTO) {
-        List<Predicate> predicates = new ArrayList<>();
-        Specification<Cities> citiesSpecification = (root,
-                                                   query,
-                                                   criteriaBuilder) -> {
-            if(Objects.nonNull(requestDTO.getValue())){
-                Predicate equal = criteriaBuilder.like(root.get("name"),
-                        "%" +requestDTO.getValue() + "%");
-                predicates.add(equal);
+        Specification<Cities> citiesSpecification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (Objects.nonNull(requestDTO.getValue()) && !requestDTO.getValue().isEmpty()) {
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("name")),
+                        "%" + requestDTO.getValue().toLowerCase() + "%"
+                ));
             }
-            assert query != null;
-            return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
+
         Sort sort = Sort.by(pageRequestDTO.getSort(), "id");
-        Pageable pageable = PageRequest.of(Integer.parseInt(pageRequestDTO
-                        .getPageNo()), Integer.parseInt(pageRequestDTO.getPageSize()),
-                sort);
+        Pageable pageable = PageRequest.of(
+                Integer.parseInt(pageRequestDTO.getPageNo()),
+                Integer.parseInt(pageRequestDTO.getPageSize()),
+                sort
+        );
+
         Page<Cities> all = cityRepository.findAll(citiesSpecification, pageable);
-        return all.map(car -> GetCitiesResponse.builder()
-                .name(car.getName())
+        return all.map(city -> GetCitiesResponse.builder()
+                .name(city.getName())
                 .country("Indonesia")
                 .build()
         );
