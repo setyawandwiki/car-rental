@@ -6,7 +6,6 @@ import com.rental_car_project_backend.car.rental.dto.request.user.UpdateUserRequ
 import com.rental_car_project_backend.car.rental.dto.response.user.UpdateUserResponse;
 import com.rental_car_project_backend.car.rental.dto.response.user.UserResponse;
 import com.rental_car_project_backend.car.rental.entity.Address;
-import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.entity.Cities;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
@@ -15,7 +14,6 @@ import com.rental_car_project_backend.car.rental.service.UserService;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import jakarta.persistence.criteria.Predicate;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -35,6 +34,7 @@ import java.util.Objects;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     @Override
+    @Transactional(readOnly = true)
     public Page<UserResponse> getAllUsers(PageRequestDTO pageRequestDTO, SearchUserDTO searchUserDTO) {
         List<Predicate> predicates = new ArrayList<>();
         Specification<Users>
@@ -87,6 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UpdateUserResponse updateUser(UpdateUserRequest request) {
         boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
         if(!authenticated){

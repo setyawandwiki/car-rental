@@ -13,11 +13,7 @@ import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException
 import com.rental_car_project_backend.car.rental.repository.CarRepository;
 import com.rental_car_project_backend.car.rental.service.CarService;
 import com.rental_car_project_backend.car.rental.service.ImageUploadService;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -27,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -91,6 +88,7 @@ public class CarServiceImpl implements CarService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<GetCarResponse> getCars(SearchRequestDTO requestDTO, PageRequestDTO pageRequestDTO) {
         List<Predicate> predicates = new ArrayList<>();
         Specification<Cars> carsSpecification = (root,
@@ -101,8 +99,7 @@ public class CarServiceImpl implements CarService {
                         "%" +requestDTO.getValue() + "%");
                 predicates.add(equal);
             }
-            assert query != null;
-            return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
+            return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
         };
         Sort sort = Sort.by(pageRequestDTO.getSort(), "id");
         Pageable pageable = PageRequest.of(Integer.parseInt(pageRequestDTO

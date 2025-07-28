@@ -12,10 +12,10 @@ import com.rental_car_project_backend.car.rental.service.PaymentService;
 import com.xendit.exception.XenditException;
 import com.xendit.model.Disbursement;
 import com.xendit.model.Invoice;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
