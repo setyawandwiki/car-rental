@@ -90,6 +90,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/payments")
                                 .hasAnyAuthority("USER")
                                 .requestMatchers("/payments/webhook/**").permitAll()
+                                .requestMatchers("/city").permitAll()
                                 .anyRequest()
                                 .permitAll())
                 .csrf(AbstractHttpConfigurer::disable)
@@ -107,7 +108,7 @@ public class SecurityConfig {
         configuration.setAllowedOriginPatterns(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true); // INI PENTING
+        configuration.setAllowCredentials(true);
         configuration.setExposedHeaders(List.of("Authorization"));
         configuration.setMaxAge(3600L);
 
