@@ -16,10 +16,10 @@ import com.rental_car_project_backend.car.rental.repository.UserRepository;
 import com.rental_car_project_backend.car.rental.repository.VendorRepository;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import com.rental_car_project_backend.car.rental.service.ImageUploadService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.LocalDateTime;

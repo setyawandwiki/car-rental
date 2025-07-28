@@ -19,7 +19,6 @@ import com.rental_car_project_backend.car.rental.service.CarService;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import com.rental_car_project_backend.car.rental.service.OrderService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

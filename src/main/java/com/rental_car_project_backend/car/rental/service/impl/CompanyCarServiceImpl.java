@@ -2,7 +2,6 @@ package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.company_car.CreateCompanyCarRequest;
 import com.rental_car_project_backend.car.rental.dto.request.company_car.UpdateCompanyCarRequest;
-import com.rental_car_project_backend.car.rental.dto.request.page.CompanyCarSearchRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.CreateCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.DeleteCompanyCarResponse;
@@ -19,21 +18,17 @@ import com.rental_car_project_backend.car.rental.repository.CarRepository;
 import com.rental_car_project_backend.car.rental.repository.CompanyCarRepository;
 import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.function.Predicate;
 
 @Service
 @RequiredArgsConstructor

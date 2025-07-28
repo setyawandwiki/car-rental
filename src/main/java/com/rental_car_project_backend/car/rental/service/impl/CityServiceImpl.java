@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ import java.util.Objects;
 public class CityServiceImpl implements CityService {
     private final CityRepository cityRepository;
     @Override
+    @Transactional(readOnly = true)
     public Page<GetCitiesResponse> getCities(SearchRequestDTO requestDTO, PageRequestDTO pageRequestDTO) {
         Specification<Cities> citiesSpecification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
