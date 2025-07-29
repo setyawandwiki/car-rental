@@ -10,6 +10,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Table(name = "company_cars")
 @Entity
@@ -23,12 +24,18 @@ public class CompanyCar {
     private Integer id;
     @Column(name = "id_company")
     private Integer idCompany;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_company", insertable = false, updatable = false)
+    private Companies company;
     @Column(name = "price")
     private Double price;
     @Column(name = "id_car")
     private Integer idCar;
     @Column(name = "id_car_type")
     private Integer idCarType;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_car_type", insertable = false, updatable = false)
+    private CarTypes carTypes;
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private CompanyCarStatus status;

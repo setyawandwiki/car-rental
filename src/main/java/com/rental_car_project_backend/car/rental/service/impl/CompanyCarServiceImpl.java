@@ -8,10 +8,7 @@ import com.rental_car_project_backend.car.rental.dto.response.company_car.Create
 import com.rental_car_project_backend.car.rental.dto.response.company_car.DeleteCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.UpdateCompanyCarResponse;
-import com.rental_car_project_backend.car.rental.entity.Cars;
-import com.rental_car_project_backend.car.rental.entity.Cities;
-import com.rental_car_project_backend.car.rental.entity.Companies;
-import com.rental_car_project_backend.car.rental.entity.CompanyCar;
+import com.rental_car_project_backend.car.rental.entity.*;
 import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
 import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyCarNotFoundException;
@@ -21,6 +18,7 @@ import com.rental_car_project_backend.car.rental.repository.CityRepository;
 import com.rental_car_project_backend.car.rental.repository.CompanyCarRepository;
 import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -78,21 +76,39 @@ public class CompanyCarServiceImpl implements CompanyCarService {
 
     @Override
     public Page<GetCompanyCarResponse> getCompanyCars(SearchRequestDTO requestDTO, PageRequestDTO pageRequestDTO) {
-        List<Predicate> predicates = new ArrayList<>();
-        Specification<Cars> carsSpecification = (root,
+        Specification<CompanyCar> carsSpecification = (root,
                                                  query,
-                                                 criteriaBuilder) -> {
-            if(Objects.nonNull(requestDTO.getValue())){
-                Predicate equal = criteriaBuilder.like(root.get("name"),
-                        "%" +requestDTO.getValue() + "%");
-                predicates.add(equal);
+                                                 cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            Join<CompanyCar, Companies> companyJoin = root.join("company");
+            Join<CompanyCar, CarTypes> carTypeJoin = root.join("carTypes");
+            Join<Companies, Cities> cityJoin = companyJoin.join("cities");
+
+            if (Objects.nonNull(requestDTO.getValue())) {
+                predicates.add(
+                        cb.like(
+                                cb.lower(cityJoin.get("name")),
+                                "%" + requestDTO.getValue().toLowerCase() + "%"
+                        )
+                );
             }
-            return criteriaBuilder.and(predicates.toArray(new Predicate[]{}));
+
+            if (Objects.nonNull(requestDTO.getType())) {
+                predicates.add(
+                        cb.equal(
+                                cb.lower(carTypeJoin.get("name")),
+                                requestDTO.getType().toLowerCase()
+                        )
+                );
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
         };
         Sort sort = Sort.by(pageRequestDTO.getSort(), "id");
         Pageable pageRequest = PageRequest.of(Integer.parseInt(pageRequestDTO.getPageNo()),
                 Integer.parseInt(pageRequestDTO.getPageSize()), sort);
-        Page<CompanyCar> all = companyCarRepository.findAll(pageRequest);
+        Page<CompanyCar> all = companyCarRepository.findAll(carsSpecification, pageRequest);
         return all.map(val -> {
             GetCompanyCarResponse response = new GetCompanyCarResponse();
             Companies companies = companyRepository.findById(val.getIdCompany()).get();

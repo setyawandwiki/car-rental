@@ -9,6 +9,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Table(name = "companies")
 @Entity
@@ -28,6 +29,9 @@ public class Companies {
     private String image;
     @Column(name = "id_city")
     private Integer idCity;
+    @ManyToOne
+    @JoinColumn(name = "id_city", insertable = false, updatable = false)
+    private Cities cities;
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
