@@ -88,11 +88,13 @@ CREATE TABLE cars (
 CREATE TABLE companies (
     id BIGSERIAL PRIMARY KEY,
     id_user BIGSERIAL,
+    id_city int,
     name VARCHAR(255),
     rate INT,
     image VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     CONSTRAINT fk_user FOREIGN KEY (id_user) REFERENCES users(id),
+    CONSTRAINT fk_city FOREIGN KEY (id_city) REFERENCES cities(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP
 );
 

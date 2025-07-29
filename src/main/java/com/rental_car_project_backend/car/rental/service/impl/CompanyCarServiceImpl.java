@@ -69,7 +69,7 @@ public class CompanyCarServiceImpl implements CompanyCarService {
 
     @Override
     public Page<GetCompanyCarResponse> getCompanyCars(PageRequestDTO pageRequestDTO) {
-        Sort sort = Sort.by(pageRequestDTO.getSort(), "created_at");
+        Sort sort = Sort.by(pageRequestDTO.getSort(), "id");
         Pageable pageRequest = PageRequest.of(Integer.parseInt(pageRequestDTO.getPageNo()),
                 Integer.parseInt(pageRequestDTO.getPageSize()), sort);
         Page<CompanyCar> all = companyCarRepository.findAll(pageRequest);

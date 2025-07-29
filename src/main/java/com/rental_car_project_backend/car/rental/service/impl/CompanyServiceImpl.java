@@ -140,6 +140,7 @@ public class CompanyServiceImpl implements CompanyService {
             companyResponse.setName(val.getName());
             companyResponse.setImage(val.getImage());
             companyResponse.setIdUser(val.getIdUser());
+            companyResponse.setIdCity(val.getIdCity());
             companyResponse.setCreatedAt(val.getCreatedAt());
             companyResponse.setUpdatedAt(val.getUpdatedAt());
             return companyResponse;

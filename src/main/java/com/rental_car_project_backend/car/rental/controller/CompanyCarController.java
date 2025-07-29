@@ -10,6 +10,7 @@ import com.rental_car_project_backend.car.rental.dto.response.company_car.Update
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +25,12 @@ public class CompanyCarController {
     @GetMapping
     public ResponseEntity<Page<GetCompanyCarResponse>> getAllCompanyCars(
             @RequestParam(name = "pageNo", defaultValue = "0", required = false) String pageNo,
-            @RequestParam(name = "pageSize", defaultValue = "10", required = false) String pageSize){
+            @RequestParam(name = "pageSize", defaultValue = "10", required = false) String pageSize,
+            @RequestParam(value = "sort", defaultValue = "ASC", required = false) Sort.Direction sort){
         PageRequestDTO build = PageRequestDTO.builder()
                 .pageSize(pageSize)
                 .pageNo(pageNo)
+                .sort(sort)
                 .build();
         Page<GetCompanyCarResponse> companyCars = companyCarService.getCompanyCars(build);
         return ResponseEntity.ok().body(companyCars);
