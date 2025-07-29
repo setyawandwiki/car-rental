@@ -26,6 +26,8 @@ public class Companies {
     private Double rate;
     @Column(name = "image")
     private String image;
+    @Column(name = "id_city")
+    private Integer idCity;
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;

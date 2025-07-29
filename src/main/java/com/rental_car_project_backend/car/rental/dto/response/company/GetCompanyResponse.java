@@ -20,6 +20,7 @@ public class GetCompanyResponse {
     private Double rate;
     private String image;
     private Integer idUser;
+    private Integer idCity;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
