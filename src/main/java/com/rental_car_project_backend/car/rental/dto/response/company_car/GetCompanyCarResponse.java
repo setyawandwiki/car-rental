@@ -21,6 +21,7 @@ public class GetCompanyCarResponse {
     private Double price;
     private Integer idCar;
     private Integer idCarType;
+    private String city;
     private CompanyCarStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

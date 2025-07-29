@@ -8,6 +8,7 @@ import com.rental_car_project_backend.car.rental.dto.response.company_car.Delete
 import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.UpdateCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.entity.Cars;
+import com.rental_car_project_backend.car.rental.entity.Cities;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.entity.CompanyCar;
 import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
@@ -15,6 +16,7 @@ import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException
 import com.rental_car_project_backend.car.rental.exceptions.CompanyCarNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.CarRepository;
+import com.rental_car_project_backend.car.rental.repository.CityRepository;
 import com.rental_car_project_backend.car.rental.repository.CompanyCarRepository;
 import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
@@ -36,6 +38,8 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     private final CompanyCarRepository companyCarRepository;
     private final CompanyRepository companyRepository;
     private final CarRepository carRepository;
+    private final CityRepository cityRepository;
+
     @Override
     @Transactional
     public CreateCompanyCarResponse createCompanyCar(CreateCompanyCarRequest request) {
@@ -75,11 +79,14 @@ public class CompanyCarServiceImpl implements CompanyCarService {
         Page<CompanyCar> all = companyCarRepository.findAll(pageRequest);
         return all.map(val -> {
             GetCompanyCarResponse response = new GetCompanyCarResponse();
+            Companies companies = companyRepository.findById(val.getIdCompany()).get();
+            Cities cities = cityRepository.findById(companies.getIdCity()).get();
             response.setId(val.getId());
             response.setPrice(val.getPrice());
             response.setIdCompany(val.getIdCompany());
             response.setIdCarType(val.getIdCarType());
             response.setIdCar(val.getIdCar());
+            response.setCity(cities.getName());
             response.setCreatedAt(val.getCreatedAt());
             response.setStatus(val.getStatus());
             response.setUpdatedAt(val.getUpdatedAt());
