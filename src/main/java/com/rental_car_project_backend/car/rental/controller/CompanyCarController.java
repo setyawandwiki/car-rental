@@ -3,6 +3,8 @@ package com.rental_car_project_backend.car.rental.controller;
 import com.rental_car_project_backend.car.rental.dto.request.company_car.CreateCompanyCarRequest;
 import com.rental_car_project_backend.car.rental.dto.request.company_car.UpdateCompanyCarRequest;
 import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
+import com.rental_car_project_backend.car.rental.dto.request.page.SearchRequestDTO;
+import com.rental_car_project_backend.car.rental.dto.response.car.GetCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.CreateCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.DeleteCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
@@ -24,16 +26,21 @@ public class CompanyCarController {
     private final CompanyCarService companyCarService;
     @GetMapping
     public ResponseEntity<Page<GetCompanyCarResponse>> getAllCompanyCars(
-            @RequestParam(name = "pageNo", defaultValue = "0", required = false) String pageNo,
-            @RequestParam(name = "pageSize", defaultValue = "10", required = false) String pageSize,
-            @RequestParam(value = "sort", defaultValue = "ASC", required = false) Sort.Direction sort){
-        PageRequestDTO build = PageRequestDTO.builder()
-                .pageSize(pageSize)
-                .pageNo(pageNo)
-                .sort(sort)
+            @RequestParam(value = "name", defaultValue =  "", required = false) String value,
+            @RequestParam(value = "page", required = false, defaultValue = "0") String page,
+            @RequestParam(value = "sort", defaultValue = "ASC", required = false) Sort.Direction sort,
+            @RequestParam(value = "size", required = false, defaultValue = "10") String size){
+        SearchRequestDTO requestDTO = SearchRequestDTO.builder()
+                .value(value)
                 .build();
-        Page<GetCompanyCarResponse> companyCars = companyCarService.getCompanyCars(build);
-        return ResponseEntity.ok().body(companyCars);
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
+                .pageNo(page)
+                .pageSize(size)
+                .sort(sort)
+                .sortColumn("id")
+                .build();
+        Page<GetCompanyCarResponse> result = companyCarService.getCompanyCars(requestDTO, pageRequestDTO);
+        return ResponseEntity.ok().body(result);
     }
     @GetMapping(path = "/{id}")
     public ResponseEntity<GetCompanyCarResponse> getCompanyCar(@PathVariable("id") Integer id){
