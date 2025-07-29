@@ -26,7 +26,7 @@ public class Users {
     private String fullName;
     @Column(name = "birth_date")
     private Date birthDate;
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
     @Column(name = "phone_number")
     private String phoneNumber;
