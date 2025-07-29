@@ -26,12 +26,14 @@ public class CompanyCarController {
     private final CompanyCarService companyCarService;
     @GetMapping
     public ResponseEntity<Page<GetCompanyCarResponse>> getAllCompanyCars(
-            @RequestParam(value = "name", defaultValue =  "", required = false) String value,
+            @RequestParam(value = "city", defaultValue =  "", required = false) String value,
+            @RequestParam(value = "type", defaultValue =  "Manual", required = false) String type,
             @RequestParam(value = "page", required = false, defaultValue = "0") String page,
             @RequestParam(value = "sort", defaultValue = "ASC", required = false) Sort.Direction sort,
             @RequestParam(value = "size", required = false, defaultValue = "10") String size){
         SearchRequestDTO requestDTO = SearchRequestDTO.builder()
                 .value(value)
+                .type(type)
                 .build();
         PageRequestDTO pageRequestDTO = PageRequestDTO.builder()
                 .pageNo(page)

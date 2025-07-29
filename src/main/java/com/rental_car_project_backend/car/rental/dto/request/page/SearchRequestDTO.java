@@ -11,4 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class SearchRequestDTO {
     private String value;
+    private String type;
 }

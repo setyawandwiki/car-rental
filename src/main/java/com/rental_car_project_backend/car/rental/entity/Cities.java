@@ -25,6 +25,8 @@ public class Cities {
     private Integer idCountry;
     @Column(name = "name")
     private String name;
+    @OneToMany(mappedBy = "cities")
+    private List<Companies> companies;
     @OneToMany(mappedBy = "city")
     private List<Address> addresses;
     @Column(name = "created_at")
