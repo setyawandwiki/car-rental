@@ -5,7 +5,9 @@ import com.rental_car_project_backend.car.rental.exceptions.*;
 import com.rental_car_project_backend.car.rental.exceptions.NullPointerException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -116,6 +118,28 @@ public class GlobalExceptionHandler {
                 .timestamp(new Date(System.currentTimeMillis()))
                 .build();
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleDataIntegrityViolation(HttpServletRequest request,
+                                                      HttpServletResponse response,
+                                                      DataIntegrityViolationException e) {
+        String errorMessage = "User Already Exists !";
+
+        if (e.getCause() instanceof ConstraintViolationException) {
+            errorMessage = "Duplicate entry or constraint violation";
+        }
+
+        log.warn("Data integrity violation at {}, status code {}, message: {}",
+                request.getRequestURI(), response.getStatus(), errorMessage);
+
+        return ErrorResponse.builder()
+                .code(HttpStatus.CONFLICT.value())
+                .message(errorMessage)
+                .timestamp(new Date())
+                .build();
+    }
+
     @ExceptionHandler(CompanyNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse companyNotFound(HttpServletRequest request,
