@@ -20,7 +20,7 @@ public class GetCompanyCarResponse {
     private Integer idCompany;
     private Double price;
     private Integer idCar;
-    private Integer idCarType;
+    private String carType;
     private String city;
     private CompanyCarStatus status;
     private LocalDateTime createdAt;
