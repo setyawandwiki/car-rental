@@ -4,6 +4,8 @@ import com.rental_car_project_backend.car.rental.dto.request.company_car.CreateC
 import com.rental_car_project_backend.car.rental.dto.request.company_car.UpdateCompanyCarRequest;
 import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.request.page.SearchRequestDTO;
+import com.rental_car_project_backend.car.rental.dto.response.car.GetCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.GetCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.CreateCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.DeleteCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
@@ -14,7 +16,9 @@ import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException
 import com.rental_car_project_backend.car.rental.exceptions.CompanyCarNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.*;
+import com.rental_car_project_backend.car.rental.service.CarService;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
+import com.rental_car_project_backend.car.rental.service.CompanyService;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +44,8 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     private final CarRepository carRepository;
     private final CityRepository cityRepository;
     private final CarTypeRepository carTypeRepository;
+    private final CarService carService;
+    private final CompanyService companyService;
 
     @Override
     @Transactional
@@ -114,16 +120,19 @@ public class CompanyCarServiceImpl implements CompanyCarService {
             CompanyCar companyCar = companyCarRepository.findById(val.getId()).get();
             CarTypes carTypes = carTypeRepository.findById(companyCar.getIdCarType()).get();
             Cars cars = carRepository.findById(companyCar.getIdCar()).get();
+            GetCarResponse car = carService.getCar(companyCar.getIdCar());
+            GetCompanyResponse company = companyService.findCompany(companyCar.getIdCompany());
             response.setId(val.getId());
             response.setPrice(val.getPrice());
             response.setIdCompany(val.getIdCompany());
             response.setCarType(carTypes.getName());
-            response.setCar(cars.getName());
             response.setIdCar(val.getIdCar());
             response.setCity(cities.getName());
             response.setCreatedAt(val.getCreatedAt());
             response.setStatus(val.getStatus());
             response.setUpdatedAt(val.getUpdatedAt());
+            response.setCar(car);
+            response.setCompany(company);
             return response;
         });
     }
@@ -194,17 +203,19 @@ public class CompanyCarServiceImpl implements CompanyCarService {
         CompanyCar companyCar = companyCarRepository.findById(id).orElseThrow(()
                 -> new CompanyCarNotFoundException("Company car with id " + id + " not found"));
         CarTypes carTypes = carTypeRepository.findById(companyCar.getIdCarType()).get();
-        Cars cars = carRepository.findById(companyCar.getIdCar()).get();
+        GetCarResponse car = carService.getCar(companyCar.getIdCar());
+        GetCompanyResponse company = companyService.findCompany(companyCar.getIdCompany());
         return GetCompanyCarResponse.builder()
                 .id(companyCar.getId())
                 .idCompany(companyCar.getIdCompany())
-                .car(cars.getName())
                 .idCar(companyCar.getIdCar())
                 .createdAt(companyCar.getCreatedAt())
                 .updatedAt(companyCar.getUpdatedAt())
                 .carType(carTypes.getName())
                 .price(companyCar.getPrice())
                 .status(companyCar.getStatus())
+                .car(car)
+                .company(company)
                 .build();
     }
 }
