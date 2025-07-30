@@ -13,10 +13,7 @@ import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
 import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyCarNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
-import com.rental_car_project_backend.car.rental.repository.CarRepository;
-import com.rental_car_project_backend.car.rental.repository.CityRepository;
-import com.rental_car_project_backend.car.rental.repository.CompanyCarRepository;
-import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
+import com.rental_car_project_backend.car.rental.repository.*;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
@@ -42,6 +39,7 @@ public class CompanyCarServiceImpl implements CompanyCarService {
     private final CompanyRepository companyRepository;
     private final CarRepository carRepository;
     private final CityRepository cityRepository;
+    private final CarTypeRepository carTypeRepository;
 
     @Override
     @Transactional
@@ -113,10 +111,12 @@ public class CompanyCarServiceImpl implements CompanyCarService {
             GetCompanyCarResponse response = new GetCompanyCarResponse();
             Companies companies = companyRepository.findById(val.getIdCompany()).get();
             Cities cities = cityRepository.findById(companies.getIdCity()).get();
+            CompanyCar companyCar = companyCarRepository.findById(val.getId()).get();
+            CarTypes carTypes = carTypeRepository.findById(companyCar.getIdCarType()).get();
             response.setId(val.getId());
             response.setPrice(val.getPrice());
             response.setIdCompany(val.getIdCompany());
-            response.setIdCarType(val.getIdCarType());
+            response.setCarType(carTypes.getName());
             response.setIdCar(val.getIdCar());
             response.setCity(cities.getName());
             response.setCreatedAt(val.getCreatedAt());
@@ -191,14 +191,14 @@ public class CompanyCarServiceImpl implements CompanyCarService {
         }
         CompanyCar companyCar = companyCarRepository.findById(id).orElseThrow(()
                 -> new CompanyCarNotFoundException("Company car with id " + id + " not found"));
-
+        CarTypes carTypes = carTypeRepository.findById(companyCar.getIdCarType()).get();
         return GetCompanyCarResponse.builder()
                 .id(companyCar.getId())
                 .idCompany(companyCar.getIdCompany())
                 .idCar(companyCar.getIdCar())
                 .createdAt(companyCar.getCreatedAt())
                 .updatedAt(companyCar.getUpdatedAt())
-                .idCarType(companyCar.getIdCarType())
+                .carType(carTypes.getName())
                 .price(companyCar.getPrice())
                 .status(companyCar.getStatus())
                 .build();
