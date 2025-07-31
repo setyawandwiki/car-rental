@@ -6,11 +6,13 @@ import com.rental_car_project_backend.car.rental.dto.response.company.CreateComp
 import com.rental_car_project_backend.car.rental.dto.response.company.DeleteCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company.GetCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company.UpdateCompanyResponse;
+import com.rental_car_project_backend.car.rental.entity.Cities;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.entity.Vendor;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
+import com.rental_car_project_backend.car.rental.repository.CityRepository;
 import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
 import com.rental_car_project_backend.car.rental.repository.VendorRepository;
@@ -34,6 +36,7 @@ public class CompanyServiceImpl implements CompanyService {
     private final ImageUploadService imageUploadService;
     private final UserRepository userRepository;
     private final VendorRepository vendorRepository;
+    private final CityRepository cityRepository;
 
     @Override
     @Transactional
@@ -151,10 +154,12 @@ public class CompanyServiceImpl implements CompanyService {
     public GetCompanyResponse findCompany(Integer id) {
         Companies companies = companyRepository.findById(id).orElseThrow(() ->
                 new CompanyNotFoundException("Company not found with id " + id));
+        Cities cities = cityRepository.findById(companies.getIdCity()).get();
         return GetCompanyResponse.builder()
                 .createdAt(companies.getCreatedAt())
                 .id(companies.getId())
                 .image(companies.getImage())
+                .idCity(cities.getId())
                 .name(companies.getName())
                 .idUser(companies.getIdUser())
                 .updatedAt(companies.getUpdatedAt())
