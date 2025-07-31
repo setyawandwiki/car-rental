@@ -38,6 +38,8 @@ public class Orders {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
+    @Column(name = "url")
+    private String url;
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;

@@ -22,6 +22,7 @@ public class CreateOrderRequest {
     private Integer idCompanyCars;
     private Integer idUser;
     private String status;
+    private String url;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private GetCarResponse carResponse;

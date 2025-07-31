@@ -124,7 +124,7 @@ public class GlobalExceptionHandler {
     public ErrorResponse handleDataIntegrityViolation(HttpServletRequest request,
                                                       HttpServletResponse response,
                                                       DataIntegrityViolationException e) {
-        String errorMessage = "User Already Exists !";
+        String errorMessage = e.getMessage();
 
         if (e.getCause() instanceof ConstraintViolationException) {
             errorMessage = "Duplicate entry or constraint violation";

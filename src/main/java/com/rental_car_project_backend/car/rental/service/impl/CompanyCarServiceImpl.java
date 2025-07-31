@@ -204,7 +204,6 @@ public class CompanyCarServiceImpl implements CompanyCarService {
         CarTypes carTypes = carTypeRepository.findById(companyCar.getIdCarType()).get();
         GetCarResponse car = carService.getCar(companyCar.getIdCar());
         GetCompanyResponse company = companyService.findCompany(companyCar.getIdCompany());
-        System.out.println(company.toString());
         Cities cities = cityRepository.findById(company.getIdCity()).orElseThrow(()->
                 new CompanyNotFoundException("the id with " + company.getIdCity()));
         return GetCompanyCarResponse.builder()

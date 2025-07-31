@@ -56,6 +56,7 @@ public class CompanyServiceImpl implements CompanyService {
         companies.setRate(request.getRate());
         companies.setName(request.getName());
         companies.setIdUser(users.getId());
+        companies.setIdCity(request.getIdCity());
         companies.setImage(upload);
         Companies save = companyRepository.save(companies);
 
