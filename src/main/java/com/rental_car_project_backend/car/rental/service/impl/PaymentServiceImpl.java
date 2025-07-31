@@ -64,6 +64,9 @@ public class PaymentServiceImpl implements PaymentService {
                 .invoiceId(invoice.getId())
                 .build();
         paymentRepository.save(payments);
+        Orders orders1 = orderRepository.findById(payments.getOrderId()).get();
+        orders1.setUrl(invoice.getInvoiceUrl());
+        orderRepository.save(orders1);
         return CreatedPaymentResponse.builder()
                 .id(payments.getId())
                 .orderId(payments.getOrderId())
@@ -139,7 +142,7 @@ public class PaymentServiceImpl implements PaymentService {
         params.put("account_holder_name", users.getFullName());
         params.put("account_number", users.getAccountNumber());
         Disbursement disbursement;
-
+        System.out.println(users.toString());
         try {
              disbursement = Disbursement.create(params);
         } catch (XenditException e) {

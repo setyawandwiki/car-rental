@@ -8,6 +8,7 @@ import com.rental_car_project_backend.car.rental.dto.response.order.GetOrderResp
 import com.rental_car_project_backend.car.rental.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,11 +28,13 @@ public class OrderController {
     @GetMapping
     public ResponseEntity<Page<GetOrderResponse>> getOrderUser(
             @RequestParam(name = "pageNo", defaultValue = "0", required = false) String pageNo,
-            @RequestParam(name = "pageSize", defaultValue = "10", required = false) String pageSize)
+            @RequestParam(name = "pageSize", defaultValue = "10", required = false) String pageSize,
+            @RequestParam(value = "sort", defaultValue = "ASC", required = false) Sort.Direction sort)
     {
         PageRequestDTO page = PageRequestDTO.builder()
                 .pageNo(pageNo)
                 .pageSize(pageSize)
+                .sort(sort)
                 .build();
         Page<GetOrderResponse> orderResponse = orderService.getUserOrders(page);
         return ResponseEntity.ok().body(orderResponse);

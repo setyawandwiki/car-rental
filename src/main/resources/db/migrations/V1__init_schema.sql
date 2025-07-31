@@ -103,7 +103,7 @@ CREATE TABLE company_cars (
     id_company INT,
     id_car INT,
     price INT,
-    id_car_type INT UNIQUE,
+    id_car_type INT,
     status VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP,
@@ -122,6 +122,7 @@ CREATE TABLE orders (
     status VARCHAR(50),
     pickup_date DATE,
     drop_off_date DATE,
+    url VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at TIMESTAMP,
     CONSTRAINT fk_user FOREIGN KEY (id_user) REFERENCES users(id),
@@ -178,10 +179,5 @@ CREATE TABLE payments(
 INSERT INTO roles (name) VALUES ('USER'),('ADMIN');
 
 INSERT INTO countries(name) VALUES ('Indonesia');
-
-INSERT INTO cities (id_country, name) VALUES (1, 'Bogor'),
-(1, 'Jakarta'),
-(1, 'Cibinong'),
-(1, 'Cibubur');
 
 INSERT INTO car_types (name) VALUES ('Automatic'), ('Manual');
