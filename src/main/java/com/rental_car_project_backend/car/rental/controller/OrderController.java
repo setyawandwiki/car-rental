@@ -6,6 +6,7 @@ import com.rental_car_project_backend.car.rental.dto.response.order.CreateOrderR
 import com.rental_car_project_backend.car.rental.dto.response.order.DeleteOrderResponse;
 import com.rental_car_project_backend.car.rental.dto.response.order.GetOrderResponse;
 import com.rental_car_project_backend.car.rental.service.OrderService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -18,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/orders")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer")
 public class OrderController {
     private final OrderService orderService;
     @PostMapping
