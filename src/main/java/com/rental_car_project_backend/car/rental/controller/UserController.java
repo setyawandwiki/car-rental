@@ -6,6 +6,7 @@ import com.rental_car_project_backend.car.rental.dto.request.user.UpdateUserRequ
 import com.rental_car_project_backend.car.rental.dto.response.user.UpdateUserResponse;
 import com.rental_car_project_backend.car.rental.dto.response.user.UserResponse;
 import com.rental_car_project_backend.car.rental.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer")
 public class UserController {
     private final UserService userService;
     @GetMapping
