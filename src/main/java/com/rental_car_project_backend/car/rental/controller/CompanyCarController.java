@@ -10,6 +10,8 @@ import com.rental_car_project_backend.car.rental.dto.response.company_car.Delete
 import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.UpdateCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -44,22 +46,26 @@ public class CompanyCarController {
         Page<GetCompanyCarResponse> result = companyCarService.getCompanyCars(requestDTO, pageRequestDTO);
         return ResponseEntity.ok().body(result);
     }
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     @GetMapping(path = "/{id}")
     public ResponseEntity<GetCompanyCarResponse> getCompanyCar(@PathVariable("id") Integer id){
         GetCompanyCarResponse companyCar = companyCarService.findCompanyCar(id);
         return ResponseEntity.ok().body(companyCar);
     }
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     @PutMapping(path = "/{id}")
     public ResponseEntity<UpdateCompanyCarResponse> updateCompanyCar(@PathVariable("id") Integer id,
                                                                      @RequestBody UpdateCompanyCarRequest request){
         UpdateCompanyCarResponse updateCompanyCarResponse = companyCarService.updateCompanyCar(id, request);
         return ResponseEntity.ok().body(updateCompanyCarResponse);
     }
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     @PostMapping
     public ResponseEntity<CreateCompanyCarResponse> createCompany(@RequestBody CreateCompanyCarRequest request){
         CreateCompanyCarResponse companyCar = companyCarService.createCompanyCar(request);
         return ResponseEntity.ok().body(companyCar);
     }
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<DeleteCompanyCarResponse> deleteCompany(@PathVariable("id") Integer id){
         DeleteCompanyCarResponse deleteCompanyCarResponse = companyCarService.deleteCompanyCar(id);
