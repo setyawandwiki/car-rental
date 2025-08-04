@@ -34,6 +34,20 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(IncompletableDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse incompletableDataException(HttpServletRequest request,
+                                               UserNotFoundException e){
+
+        log.info("something wrong with endpoint {}, with status code {}, message : {}",
+                request.getRequestURI(), HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        return ErrorResponse.builder()
+                .code(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .timestamp(new Date(System.currentTimeMillis()))
+                .build();
+    }
+
     @ExceptionHandler(RoleNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse roleNotFound(HttpServletRequest request,
