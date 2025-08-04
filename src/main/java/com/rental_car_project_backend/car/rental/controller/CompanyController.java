@@ -22,6 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/company")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "Bearer")
 public class CompanyController {
     private final CompanyService companyService;
     @Operation(security = {@SecurityRequirement(name = "Bearer")})
