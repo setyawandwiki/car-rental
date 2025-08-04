@@ -6,6 +6,8 @@ import com.rental_car_project_backend.car.rental.dto.request.payment.PaymentNoti
 import com.rental_car_project_backend.car.rental.dto.response.payment.CreatedPaymentResponse;
 import com.rental_car_project_backend.car.rental.service.PaymentService;
 import com.xendit.exception.XenditException;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
     private final PaymentService paymentService;
     @PostMapping
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     public ResponseEntity<CreatedPaymentResponse> createPaymentResponse(@RequestBody CreatePaymentRequest request){
         CreatedPaymentResponse payment = paymentService.createPayment(request);
         return ResponseEntity.ok(payment);
