@@ -9,6 +9,8 @@ import com.rental_car_project_backend.car.rental.dto.response.car.DeleteCarRespo
 import com.rental_car_project_backend.car.rental.dto.response.car.GetCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.car.UpdateCarResponse;
 import com.rental_car_project_backend.car.rental.service.CarService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CarController {
     private final CarService carService;
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     @PostMapping
     public ResponseEntity<CreateCarResponse> createCar(@Valid @RequestParam("name") String name,
                                                        @RequestParam("year") Integer year,
@@ -36,6 +39,7 @@ public class CarController {
         CreateCarResponse createCarResponse = carService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(createCarResponse);
     }
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     @GetMapping(path = "/{id}")
     public ResponseEntity<GetCarResponse> getCar(@PathVariable("id") Integer id){
         GetCarResponse carResponse = carService.getCar(id);
@@ -60,11 +64,13 @@ public class CarController {
         Page<GetCarResponse> cars = carService.getCars(requestDTO, pageRequestDTO);
         return ResponseEntity.status(HttpStatus.OK).body(cars);
     }
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<DeleteCarResponse> deleteCar(@PathVariable("id") Integer id) throws IOException {
         DeleteCarResponse deleteCarResponse = carService.deleteCarById(id);
         return ResponseEntity.status(HttpStatus.OK).body(deleteCarResponse);
     }
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     @PutMapping(path = "/{id}")
     public ResponseEntity<UpdateCarResponse> updateCar(@PathVariable("id") Integer id,
                                                        @Valid @RequestParam("name") String name,

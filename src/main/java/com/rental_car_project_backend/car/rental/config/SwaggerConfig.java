@@ -12,10 +12,10 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenApi(){
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes("Bearer",
-                        new SecurityScheme().type(SecurityScheme.Type.HTTP)
-                                .scheme("Bearer")
-                                .bearerFormat("JWT")))
+                .components(new Components()
+                        .addSecuritySchemes("Bearer",
+                                new SecurityScheme().type(SecurityScheme.Type.HTTP)
+                                        .scheme("Bearer").bearerFormat("JWT")))
                 /*untuk identifikasi data jwtnya, seperti title dsb*/
                 .info(new Info()
                         .title("Car Rental")
