@@ -48,6 +48,9 @@ public class CompanyServiceImpl implements CompanyService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users users = userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException("user not found with email " + email));
+        if (users.getFullName() == null || users.getBankCode() == null || users.getAccountNumber() == null) {
+            throw new IllegalArgumentException("User data is incomplete: full name, bank code, or account number is missing");
+        }
         String uniqueCompanyId = "company-" + UUID.randomUUID();
         String upload = imageUploadService
                 .uploadImage(request.getImageFile(), uniqueCompanyId, "company-images");
