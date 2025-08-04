@@ -11,6 +11,7 @@ import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.entity.Vendor;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
+import com.rental_car_project_backend.car.rental.exceptions.IncompletableDataException;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.CityRepository;
 import com.rental_car_project_backend.car.rental.repository.CompanyRepository;
@@ -49,7 +50,7 @@ public class CompanyServiceImpl implements CompanyService {
         Users users = userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException("user not found with email " + email));
         if (users.getFullName() == null || users.getBankCode() == null || users.getAccountNumber() == null) {
-            throw new IllegalArgumentException("User data is incomplete: " +
+            throw new IncompletableDataException("User data is incomplete: " +
                     "full name, bank code, or account number is missing");
         }
         String uniqueCompanyId = "company-" + UUID.randomUUID();
