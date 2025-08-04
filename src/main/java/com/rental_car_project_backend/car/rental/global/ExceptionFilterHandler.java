@@ -27,7 +27,6 @@ public class ExceptionFilterHandler extends OncePerRequestFilter {
         }catch (ExpiredJwtException | MalformedJwtException | SignatureException e){
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
-
             ErrorResponse error = ErrorResponse.builder()
                     .code(HttpStatus.UNAUTHORIZED.value())
                     .message("Unauthorized: " + e.getMessage())

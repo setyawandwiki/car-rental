@@ -20,7 +20,7 @@ public class JWTAuthenticationEntryPointHandler implements AuthenticationEntryPo
                          AuthenticationException authException) throws IOException, ServletException {
         ErrorResponse error = ErrorResponse.builder()
                 .code(HttpStatus.FORBIDDEN.value())
-                .message("Wrong Email And Password !")
+                .message(authException.getMessage())
                 .timestamp(new Date())
                 .build();
 
