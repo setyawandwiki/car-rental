@@ -134,7 +134,6 @@ public class PaymentServiceImpl implements PaymentService {
                 .createdAt(LocalDateTime.now())
                 .build();
         platFormProfitRepository.save(platFormProfit);
-
         Map<String, Object> params = new HashMap<>();
         params.put("external_id", "DISB-"+orders.getId());
         params.put("amount", vendorAmount.intValue());
@@ -142,7 +141,6 @@ public class PaymentServiceImpl implements PaymentService {
         params.put("account_holder_name", users.getFullName());
         params.put("account_number", users.getAccountNumber());
         Disbursement disbursement;
-        System.out.println(users.toString());
         try {
              disbursement = Disbursement.create(params);
         } catch (XenditException e) {

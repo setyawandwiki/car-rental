@@ -18,6 +18,8 @@ public class JWTAuthenticationEntryPointHandler implements AuthenticationEntryPo
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
+        System.out.println(authException.toString());
+        System.out.println(authException);
         ErrorResponse error = ErrorResponse.builder()
                 .code(HttpStatus.FORBIDDEN.value())
                 .message("Forbidden: " + authException.getMessage())

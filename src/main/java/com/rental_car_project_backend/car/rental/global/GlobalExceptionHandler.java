@@ -23,10 +23,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse userNotFoundException(HttpServletRequest request,
-                                               HttpServletResponse response,
                                                UserNotFoundException e){
+
         log.info("something wrong with endpoint {}, with status code {}, message : {}",
-                request.getRequestURI(), response.getStatus(), e.getMessage());
+                request.getRequestURI(), HttpStatus.NOT_FOUND.value(), e.getMessage());
         return ErrorResponse.builder()
                 .code(HttpStatus.NOT_FOUND.value())
                 .message(e.getMessage())
