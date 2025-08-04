@@ -45,7 +45,7 @@ public class SecurityConfig {
                                 .accessDeniedHandler(jwtAccessDeniedHandler))
                 .authorizeHttpRequests(request ->
                         request
-                                .requestMatchers("/auth/**")
+                                .requestMatchers("/auth/**","/v3/api-docs/**", "/swagger-ui/**")
                                 .permitAll()
                                 .requestMatchers(HttpMethod.GET, "/users")
                                 .hasAnyAuthority("SUPER_ADMIN")
