@@ -7,6 +7,8 @@ import com.rental_car_project_backend.car.rental.dto.response.company.DeleteComp
 import com.rental_car_project_backend.car.rental.dto.response.company.GetCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company.UpdateCompanyResponse;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +24,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CompanyController {
     private final CompanyService companyService;
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     @PostMapping
     public ResponseEntity<CreateCompanyResponse> createCompany(@Valid @RequestParam("name") String name,
                                                                @RequestParam("image")MultipartFile image,
@@ -34,6 +37,7 @@ public class CompanyController {
         CreateCompanyResponse company = companyService.createCompany(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(company);
     }
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     @PutMapping(path = "/{id}")
     public ResponseEntity<UpdateCompanyResponse> updateCompany(@PathVariable("id") Integer id,
                                                                @Valid @RequestParam(value = "name", required = false)
@@ -48,6 +52,7 @@ public class CompanyController {
         UpdateCompanyResponse updateCompanyResponse = companyService.updateCompany(id, request);
         return ResponseEntity.status(HttpStatus.OK).body(updateCompanyResponse);
     }
+    @Operation(security = {@SecurityRequirement(name = "Bearer")})
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<DeleteCompanyResponse> deleteCompany(@PathVariable Integer id) throws IOException {
         DeleteCompanyResponse deletecompany = companyService.deletecompany(id);
