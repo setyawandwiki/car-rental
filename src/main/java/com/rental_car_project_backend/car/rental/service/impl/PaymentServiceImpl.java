@@ -13,12 +13,16 @@ import com.xendit.exception.XenditException;
 import com.xendit.model.Disbursement;
 import com.xendit.model.Invoice;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -151,8 +155,6 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     @Transactional
     public void handleDisbursementCompleted(XenditDisbursementCallback callback) {
-        System.out.println(callback);
-
         if(callback == null) {
             throw new PaymentExceptions("Invalid callback payload (data is null)");
         }
@@ -172,5 +174,21 @@ public class PaymentServiceImpl implements PaymentService {
         vendors.setPendingWithDrawl(vendors.getPendingWithDrawl() - vendorAmount);
         vendors.setUpdatedAt(LocalDateTime.now());
         vendorRepository.save(vendors);
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(fixedRate = 3600000)
+    public void processPendingPayments() {
+        List<Payments> payments = paymentRepository.findByOrderStatus(OrderStatus.PENDING);
+        System.out.println("Processing orders");
+        for (Payments payment : payments){
+            Orders order = orderRepository.findById(payment.getOrderId()).orElseThrow(() ->
+                    new OrdersNotFoundException("Order not found with id " + payment.getOrderId()));
+            if(Duration.between(order.getCreatedAt(), LocalDateTime.now()).toHours() > 24){
+                order.setStatus(OrderStatus.CANCELLED);
+                payment.setOrderStatus(OrderStatus.CANCELLED);
+            }
+        }
     }
 }

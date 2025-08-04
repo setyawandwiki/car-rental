@@ -10,4 +10,5 @@ public interface PaymentService {
     CreatedPaymentResponse createPayment(CreatePaymentRequest request);
     void handlePaymentNotification(PaymentNotificationRequest request) throws XenditException;
     void handleDisbursementCompleted(XenditDisbursementCallback callback);
+    void processPendingPayments();
 }
