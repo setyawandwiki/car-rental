@@ -13,6 +13,7 @@ import com.rental_car_project_backend.car.rental.repository.UserRepository;
 import com.rental_car_project_backend.car.rental.service.AuthService;
 import com.rental_car_project_backend.car.rental.service.JWTService;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +28,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
-    @Autowired
     private final UserRepository userRepository;
-    @Autowired
     private final AuthenticationManager authenticationManager;
-    @Autowired
     private final JWTService jwtService;
-    @Autowired
     private final RoleRepository roleRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
