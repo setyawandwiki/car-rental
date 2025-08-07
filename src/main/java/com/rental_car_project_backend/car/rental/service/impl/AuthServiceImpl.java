@@ -53,10 +53,11 @@ public class AuthServiceImpl implements AuthService {
         Authentication authenticate = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         Users users = userRepository.findByEmail(request.getEmail()).orElseThrow(() ->
-                new UsernameNotFoundException("User Not Found"));
+                new UsernameNotFoundException("User not found"));
 
         Roles role = roleRepository.findById(users.getIdRole()).orElseThrow(() ->
-                new RoleNotFoundException("Role not found with id " + users.getIdRole()));
+                new RoleNotFoundException("Role not found with id role : " + users.getIdRole()));
+
         RegisterResponse userResponse = RegisterResponse.builder()
                 .email(users.getEmail())
                 .id(users.getId())
