@@ -73,6 +73,11 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public GetCarResponse getCar(Integer id) {
+        boolean authenticated = SecurityContextHolder.getContext().getAuthentication().isAuthenticated();
+
+        if (!authenticated) {
+            throw new SecurityException("You must logged in first!");
+        }
         Cars car = carRepository.findById(id).orElseThrow(()
                 -> new CarNotFoundException("Car with id " + id + " not found"));
         return GetCarResponse.builder()
