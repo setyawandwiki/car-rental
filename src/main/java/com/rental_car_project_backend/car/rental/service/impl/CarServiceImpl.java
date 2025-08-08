@@ -152,7 +152,6 @@ public class CarServiceImpl implements CarService {
         }
         Cars cars = carRepository.findById(id).orElseThrow(()
                 -> new CarNotFoundException("Car with id " + id + " not found"));
-        cars.setId(id);
         if(Objects.nonNull(request.getName())){
             cars.setName(request.getName());
         }
