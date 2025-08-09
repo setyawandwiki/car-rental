@@ -1,9 +1,12 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.company.CreateCompanyRequest;
+import com.rental_car_project_backend.car.rental.dto.request.company.UpdateCompanyRequest;
+import com.rental_car_project_backend.car.rental.entity.Cities;
 import com.rental_car_project_backend.car.rental.entity.Companies;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.entity.Vendor;
+import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.IncompletableDataException;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.CityRepository;
@@ -25,6 +28,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,6 +52,7 @@ class CompanyServiceImplTest {
     @Captor
     ArgumentCaptor<Vendor> vendorArgumentCaptor;
     CreateCompanyRequest request;
+    UpdateCompanyRequest updateCompanyRequest;
     @BeforeEach
     public void setUp(){
         request = CreateCompanyRequest.builder()
@@ -58,6 +63,14 @@ class CompanyServiceImplTest {
                         "fake-image-content".getBytes()))
                 .name("BMW")
                 .idCity(1)
+                .build();
+        updateCompanyRequest = UpdateCompanyRequest.builder()
+                .rate(3.5)
+                .imageFile(new MockMultipartFile("test",
+                        "car.jpg",
+                        "image/jpeg",
+                        "fake-image-content".getBytes()))
+                .name("BMW")
                 .build();
     }
     @Test
@@ -168,18 +181,180 @@ class CompanyServiceImplTest {
     }
 
     @Test
-    void updateCompany() {
+    void companyServiceImpl_UpdateCompanyMethodShouldReturnNotLogin() {
+        // given
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContext fakeContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(fakeContext);
+        Mockito.when(fakeContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(fakeAuthentication.isAuthenticated()).thenReturn(false);
+        // when
+        // then
+        assertThatThrownBy(()->
+                companyService.updateCompany(1, updateCompanyRequest))
+                .isInstanceOf(SecurityException.class)
+                .hasMessageContaining("You must logged in first!");
     }
 
     @Test
-    void deletecompany() {
+    void companyServiceImpl_UpdateCompanyMethodShouldReturnCompanyNotFound() {
+        // given
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContext fakeContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(fakeContext);
+        Mockito.when(fakeContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(fakeAuthentication.isAuthenticated()).thenReturn(true);
+        Mockito.when(companyRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+        // when
+        // then
+        assertThatThrownBy(()->
+                companyService.updateCompany(1, updateCompanyRequest))
+                .isInstanceOf(CompanyNotFoundException.class)
+                .hasMessageContaining("Company not found with id " + 1);
     }
 
     @Test
-    void getCompanies() {
+    void companyServicImpl_UpdateCompanyMethodShouldSucceeded() throws IOException {
+        // given
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContext fakeContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(fakeContext);
+        Companies companies = Companies.builder()
+                .image(updateCompanyRequest.getImageFile().toString())
+                .rate(updateCompanyRequest.getRate())
+                .name(updateCompanyRequest.getName())
+                .updatedAt(LocalDateTime.now())
+                .build();
+        Mockito.when(fakeContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(fakeAuthentication.isAuthenticated()).thenReturn(true);
+        Mockito.when(companyRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(companies));
+        Mockito.when(imageUploadService.uploadImage(Mockito.eq(updateCompanyRequest.getImageFile()),
+                Mockito.anyString(), Mockito.eq("company-images"))).thenReturn("image-url");
+        Mockito.when(companyRepository.save(companies)).thenReturn(companies);
+        // when
+        companyService.updateCompany(1, updateCompanyRequest);
+        // then
+        Mockito.verify(companyRepository).save(companiesArgumentCaptor.capture());
+        Companies value = companiesArgumentCaptor.getValue();
+        assertThat(value.getName()).isEqualTo(updateCompanyRequest.getName());
+    }
+
+
+    @Test
+    void companyServicImpl_DeleteMethodShouldReturnYouMustLoginFirst() throws IOException {
+        // given
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContext fakeContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(fakeContext);
+        Mockito.when(fakeContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(fakeAuthentication.isAuthenticated()).thenReturn(false);
+        // when
+        // then
+        assertThatThrownBy(()->
+                companyService.deletecompany(1))
+                .isInstanceOf(SecurityException.class)
+                .hasMessageContaining("You must logged in first!");
     }
 
     @Test
-    void findCompany() {
+    void companyServicImpl_DeleteMethodShouldReturnCompanyIdNotFound() throws IOException {
+        // given
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContext fakeContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(fakeContext);
+        Mockito.when(fakeContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(fakeAuthentication.isAuthenticated()).thenReturn(true);
+        Mockito.when(companyRepository.findById(1)).thenReturn(Optional.empty());
+        // when
+        // then
+        assertThatThrownBy(()->
+                companyService.deletecompany(1))
+                .isInstanceOf(CompanyNotFoundException.class)
+                .hasMessageContaining("Company not found with id " + 1);
+    }
+
+    @Test
+    void companyServiceImpl_DeleteMethodShouldSucceeded() throws IOException {
+        // given
+        Companies companies = Companies.builder()
+                .id(1)
+                .image(updateCompanyRequest.getImageFile().toString())
+                .rate(updateCompanyRequest.getRate())
+                .name(updateCompanyRequest.getName())
+                .updatedAt(LocalDateTime.now())
+                .build();
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContext fakeContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(fakeContext);
+        Mockito.when(fakeContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(fakeAuthentication.isAuthenticated()).thenReturn(true);
+        Mockito.when(companyRepository.findById(1)).thenReturn(Optional.of(companies));
+        Mockito.doNothing().when(imageUploadService)
+                .deleteImage(Mockito.anyString(), Mockito.eq("company-images"));
+        // when
+        companyService.deletecompany(1);
+        // then
+        Mockito.verify(companyRepository).delete(companies);
+    }
+
+    @Test
+    void companyServiceImpl_GetAllCompanies() {
+        // given
+        Companies companies = Companies.builder()
+                .id(1)
+                .image(updateCompanyRequest.getImageFile().toString())
+                .rate(updateCompanyRequest.getRate())
+                .name(updateCompanyRequest.getName())
+                .updatedAt(LocalDateTime.now())
+                .build();
+        Companies companies2 = Companies.builder()
+                .id(1)
+                .image(updateCompanyRequest.getImageFile().toString())
+                .rate(updateCompanyRequest.getRate())
+                .name(updateCompanyRequest.getName())
+                .updatedAt(LocalDateTime.now())
+                .build();
+        Mockito.when(companyRepository.findAll())
+                .thenReturn(List.of(companies2, companies));
+        // when
+        companyService.getCompanies();
+        // then
+        Mockito.verify(companyRepository).findAll();
+        assertThat(companyRepository.findAll().size()).isEqualTo(2);
+    }
+
+    @Test
+    void companyServiceImpl_GetCompanyNotFound() {
+        // given
+        Mockito.when(companyRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+        // when
+        // then
+        assertThatThrownBy(()->
+                companyService.findCompany(1))
+                .isInstanceOf(CompanyNotFoundException.class)
+                .hasMessageContaining("Company not found with id " + 1);
+    }
+
+    @Test
+    void companyServiceImpl_GetCompanySucceeded() {
+        // given
+        Companies companies = Companies.builder()
+                .id(1)
+                .idCity(1)
+                .image(updateCompanyRequest.getImageFile().toString())
+                .rate(updateCompanyRequest.getRate())
+                .name(updateCompanyRequest.getName())
+                .updatedAt(LocalDateTime.now())
+                .build();
+        Cities cities = Cities.builder()
+                .id(1)
+                .name("cibinong")
+                .build();
+        Mockito.when(cityRepository.findById(1)).thenReturn(Optional.of(cities));
+        Mockito.when(companyRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(companies));
+        // when
+        companyService.findCompany(1);
+        // then
+        Mockito.verify(companyRepository).findById(1);
     }
 }
