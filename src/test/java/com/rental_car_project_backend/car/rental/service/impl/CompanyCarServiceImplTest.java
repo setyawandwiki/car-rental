@@ -1,6 +1,8 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.company_car.CreateCompanyCarRequest;
+import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
+import com.rental_car_project_backend.car.rental.dto.request.page.SearchRequestDTO;
 import com.rental_car_project_backend.car.rental.entity.*;
 import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
 import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
@@ -16,6 +18,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,11 +48,25 @@ class CompanyCarServiceImplTest {
     private CompanyService companyService;
     @Captor
     ArgumentCaptor<CompanyCar> companyCarArgumentCaptor;
+    @Captor
+    ArgumentCaptor<Specification<CompanyCar>> specificationArgumentCaptor;
+    @Captor
+    ArgumentCaptor<Pageable> pageableArgumentCaptor;
     @InjectMocks
     private CompanyCarServiceImpl companyCarService;
     private CreateCompanyCarRequest companyCarRequest;
+    private SearchRequestDTO searchRequestDTO;
+    private PageRequestDTO pageRequestDTO;
     @BeforeEach
     void setUp(){
+        searchRequestDTO = SearchRequestDTO.builder()
+                .value("test")
+                .build();
+        pageRequestDTO = PageRequestDTO.builder()
+                .pageNo("0")
+                .sort(Sort.Direction.ASC)
+                .pageSize("10")
+                .build();
         companyCarRequest = CreateCompanyCarRequest.builder()
                 .idCar(1)
                 .idCompany(1)
@@ -174,18 +192,45 @@ class CompanyCarServiceImplTest {
     }
 
     @Test
-    void getCompanyCars() {
-    }
-
-    @Test
-    void deleteCompanyCar() {
-    }
-
-    @Test
-    void updateCompanyCar() {
-    }
-
-    @Test
-    void findCompanyCar() {
+    void companyCarServiceImpl_GetCompanyCarsSucceed() {
+        // given
+        Companies companies = Companies.builder()
+                .idCity(1)
+                .name("BMW")
+                .createdAt(LocalDateTime.now())
+                .rate(3.5)
+                .image("test.jpg")
+                .idUser(1)
+                .build();
+        CompanyCar companyCar = CompanyCar.builder()
+                .company(companies)
+                .idCompany(1)
+                .idCarType(1)
+                .idCar(1)
+                .price(2000.)
+                .createdAt(LocalDateTime.now())
+                .status(CompanyCarStatus.ACTIVE)
+                .build();
+        CompanyCar companyCar2 = CompanyCar.builder()
+                .company(companies)
+                .idCompany(1)
+                .idCarType(1)
+                .idCar(1)
+                .price(2000.)
+                .createdAt(LocalDateTime.now())
+                .status(CompanyCarStatus.ACTIVE)
+                .build();
+        Page<CompanyCar> companyCars = new PageImpl<>(List.of(companyCar2, companyCar));
+        Sort sort = Sort.by(pageRequestDTO.getSort(), "id");
+        Pageable pageRequest = PageRequest.of(Integer.parseInt(pageRequestDTO.getPageNo()),
+                Integer.parseInt(pageRequestDTO.getPageSize()), sort);
+        Mockito.when(companyCarRepository.findAll(Mockito.any(Specification.class), Mockito.eq(pageRequest)))
+                .thenReturn(companyCars);
+        // when
+        companyCarService.getCompanyCars(searchRequestDTO, pageRequestDTO);
+        //then
+        Mockito.verify(companyCarRepository)
+                .findAll(specificationArgumentCaptor.capture(), pageableArgumentCaptor.capture());
+        Specification<CompanyCar> specification = specificationArgumentCaptor.getValue();
     }
 }

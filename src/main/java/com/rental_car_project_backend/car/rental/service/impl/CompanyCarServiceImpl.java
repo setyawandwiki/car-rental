@@ -115,8 +115,10 @@ public class CompanyCarServiceImpl implements CompanyCarService {
         Page<CompanyCar> all = companyCarRepository.findAll(carsSpecification, pageRequest);
         return all.map(val -> {
             GetCompanyCarResponse response = new GetCompanyCarResponse();
-            Companies companies = companyRepository.findById(val.getIdCompany()).get();
-            Cities cities = cityRepository.findById(companies.getIdCity()).get();
+            Companies companies = companyRepository.findById(val.getIdCompany()).orElseThrow(()->
+                    new CompanyNotFoundException("Company not found with id " + val.getIdCompany()));
+            Cities cities = cityRepository.findById(companies.getIdCity()).orElseThrow(()->
+                    new City);
             CompanyCar companyCar = companyCarRepository.findById(val.getId()).get();
             CarTypes carTypes = carTypeRepository.findById(companyCar.getIdCarType()).get();
             GetCarResponse car = carService.getCar(companyCar.getIdCar());
