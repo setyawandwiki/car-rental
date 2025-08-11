@@ -1,14 +1,18 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.order.CreateOrderRequest;
+import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.response.car.GetCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company.GetCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.order.CreateOrderResponse;
 import com.rental_car_project_backend.car.rental.dto.response.order.DeleteOrderResponse;
+import com.rental_car_project_backend.car.rental.dto.response.order.GetOrderResponse;
+import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.entity.CompanyCar;
 import com.rental_car_project_backend.car.rental.entity.Orders;
 import com.rental_car_project_backend.car.rental.entity.Users;
+import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
 import com.rental_car_project_backend.car.rental.enums.OrderStatus;
 import com.rental_car_project_backend.car.rental.exceptions.OrdersNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
@@ -25,6 +29,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,9 +61,17 @@ class OrderServiceImplTest {
     private OrderServiceImpl orderService;
     @Captor
     ArgumentCaptor<Orders> ordersArgumentCaptor;
+    @Captor
+    ArgumentCaptor<Specification<Orders>> specificationArgumentCaptor;
     private CreateOrderRequest createOrderRequest;
+    private PageRequestDTO pageRequestDTO;
     @BeforeEach
     void setUp(){
+        pageRequestDTO = PageRequestDTO.builder()
+                .sort(Sort.Direction.ASC)
+                .pageSize("10")
+                .pageNo("0")
+                .build();
         createOrderRequest = CreateOrderRequest.builder()
                 .createdAt(LocalDateTime.now())
                 .idUser(1)
@@ -269,5 +283,82 @@ class OrderServiceImplTest {
                 orderService.deleteOrder(1))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("There is no user with email test@gmail.com");
+    }
+    @Test
+    void orderServiceImpl_GetUserOrdersShouldSucceed() {
+        Users users = Users.builder()
+                .email("test@gmail.com")
+                .id(1)
+                .idRole(1)
+                .bankCode("BCA")
+                .accountNumber("123456789")
+                .fullName("dwiki setyawan")
+                .build();
+        CompanyCar companyCar = CompanyCar.builder()
+                .id(1)
+                .idCompany(1)
+                .idCarType(1)
+                .idCar(1)
+                .build();
+        Orders orders = Orders.builder()
+                .id(1)
+                .createdAt(LocalDateTime.now())
+                .dropOffDate(LocalDateTime.now().plusDays(1))
+                .dropOffLoc("cibinong")
+                .pickupDate(LocalDateTime.now().plusDays(1))
+                .pickupLoc("cibinong")
+                .idCompanyCars(1)
+                .status(OrderStatus.PENDING)
+                .idUser(1)
+                .priceTotal(2000.)
+                .build();
+        GetCompanyResponse getCompanyResponse = GetCompanyResponse.builder()
+                .idCity(1)
+                .idUser(1)
+                .name("test")
+                .image("test.jpg")
+                .createdAt(LocalDateTime.now())
+                .build();
+        GetCarResponse getCarResponse = GetCarResponse.builder()
+                .id(1)
+                .year(2027)
+                .seats(2)
+                .baggages(2)
+                .name("test")
+                .build();
+        GetCompanyCarResponse getCompanyCarResponse = GetCompanyCarResponse.builder()
+                .price(2000.)
+                .idCar(1)
+                .idCompany(1)
+                .city("bogor")
+                .status(CompanyCarStatus.ACTIVE)
+                .build();
+        // given
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(securityContext.getAuthentication().getName()).thenReturn("test@gmail.com");
+        Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(users));
+        Sort sort = Sort.by(pageRequestDTO.getSort(), "created_at");
+        Pageable pageRequest = PageRequest
+                .of(Integer.parseInt(pageRequestDTO.getPageNo()), Integer.parseInt(pageRequestDTO.getPageSize()), sort);
+        Page<Orders> orders1 = new PageImpl<>(List.of(orders));
+        Mockito.when(orderRepository.userOrders(Mockito.anyInt(), Mockito.eq(pageRequest))).thenReturn(orders1);
+        Mockito.when(companyCarService.findCompanyCar(Mockito.anyInt()))
+                .thenReturn(getCompanyCarResponse);
+
+        Mockito.when(carService.getCar(Mockito.anyInt()))
+                .thenReturn(getCarResponse);
+
+        Mockito.when(companyService.findCompany(Mockito.anyInt()))
+                .thenReturn(getCompanyResponse);
+        // when
+        Page<GetOrderResponse> userOrders = orderService.getUserOrders(pageRequestDTO);
+        // then
+        assertThat(userOrders).isNotNull();
+        assertThat(userOrders.getContent()).hasSize(1);
+        assertThat(userOrders.getContent().get(0).getCarResponse().getName()).isEqualTo("test");
+        assertThat(userOrders.getContent().get(0).getCompanyResponse().getName()).isEqualTo("test");
     }
 }
