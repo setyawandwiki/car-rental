@@ -55,7 +55,7 @@ public class CompanyCarServiceImpl implements CompanyCarService {
             throw new SecurityException("You must logged in first!");
         }
         Companies company = companyRepository.findById(request.getIdCompany()).orElseThrow(() ->
-                new CompanyNotFoundException("Company not foound with id " + request.getIdCompany()));
+                new CompanyNotFoundException("Company not found with id " + request.getIdCompany()));
         Cars car = carRepository.findById(request.getIdCar()).orElseThrow(() ->
                 new CarNotFoundException("Car not found with id " + request.getIdCar()));
         CompanyCar companyCar = new CompanyCar();
