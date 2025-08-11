@@ -13,6 +13,7 @@ import com.rental_car_project_backend.car.rental.dto.response.company_car.Update
 import com.rental_car_project_backend.car.rental.entity.*;
 import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
 import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
+import com.rental_car_project_backend.car.rental.exceptions.CityNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyCarNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.*;
@@ -118,9 +119,11 @@ public class CompanyCarServiceImpl implements CompanyCarService {
             Companies companies = companyRepository.findById(val.getIdCompany()).orElseThrow(()->
                     new CompanyNotFoundException("Company not found with id " + val.getIdCompany()));
             Cities cities = cityRepository.findById(companies.getIdCity()).orElseThrow(()->
-                    new City);
-            CompanyCar companyCar = companyCarRepository.findById(val.getId()).get();
-            CarTypes carTypes = carTypeRepository.findById(companyCar.getIdCarType()).get();
+                    new CityNotFoundException("City not found with id " + companies.getIdCity()));
+            CompanyCar companyCar = companyCarRepository.findById(val.getId()).orElseThrow(()->
+                    new CompanyCarNotFoundException("Company car not found with id " + val.getId()));
+            CarTypes carTypes = carTypeRepository.findById(companyCar.getIdCarType()).orElseThrow(()->
+                    new CarNotFoundException("Car Type not found with id " + companyCar.getIdCarType()));
             GetCarResponse car = carService.getCar(companyCar.getIdCar());
             GetCompanyResponse company = companyService.findCompany(companyCar.getIdCompany());
             response.setId(val.getId());

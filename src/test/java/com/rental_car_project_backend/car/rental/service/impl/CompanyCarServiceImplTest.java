@@ -3,6 +3,9 @@ package com.rental_car_project_backend.car.rental.service.impl;
 import com.rental_car_project_backend.car.rental.dto.request.company_car.CreateCompanyCarRequest;
 import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.request.page.SearchRequestDTO;
+import com.rental_car_project_backend.car.rental.dto.response.car.GetCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.GetCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.entity.*;
 import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
 import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
@@ -165,6 +168,7 @@ class CompanyCarServiceImplTest {
                 .idUser(1)
                 .build();
         CompanyCar companyCar = CompanyCar.builder()
+                .id(1)
                 .company(companies)
                 .idCompany(1)
                 .idCarType(1)
@@ -203,6 +207,7 @@ class CompanyCarServiceImplTest {
                 .idUser(1)
                 .build();
         CompanyCar companyCar = CompanyCar.builder()
+                .id(2)
                 .company(companies)
                 .idCompany(1)
                 .idCarType(1)
@@ -212,6 +217,7 @@ class CompanyCarServiceImplTest {
                 .status(CompanyCarStatus.ACTIVE)
                 .build();
         CompanyCar companyCar2 = CompanyCar.builder()
+                .id(1)
                 .company(companies)
                 .idCompany(1)
                 .idCarType(1)
@@ -220,17 +226,37 @@ class CompanyCarServiceImplTest {
                 .createdAt(LocalDateTime.now())
                 .status(CompanyCarStatus.ACTIVE)
                 .build();
+        CarTypes carTypes = CarTypes.builder().name("SUV").build();
+        Cities cities = Cities.builder().name("Jakarta").build();
+        GetCarResponse carResponse = new GetCarResponse();
+        GetCompanyResponse companyResponse = new GetCompanyResponse();
         Page<CompanyCar> companyCars = new PageImpl<>(List.of(companyCar2, companyCar));
         Sort sort = Sort.by(pageRequestDTO.getSort(), "id");
         Pageable pageRequest = PageRequest.of(Integer.parseInt(pageRequestDTO.getPageNo()),
                 Integer.parseInt(pageRequestDTO.getPageSize()), sort);
         Mockito.when(companyCarRepository.findAll(Mockito.any(Specification.class), Mockito.eq(pageRequest)))
                 .thenReturn(companyCars);
+        Mockito.when(companyRepository.findById(Mockito.anyInt()))
+                .thenReturn(Optional.of(companies));
+        Mockito.when(cityRepository.findById(Mockito.anyInt()))
+                .thenReturn(Optional.of(cities));
+        Mockito.when(companyCarRepository.findById(Mockito.any()))
+                .thenReturn(Optional.of(companyCar2));
+        Mockito.when(carTypeRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(carTypes));
+        Mockito.when(carService.getCar(Mockito.anyInt())).thenReturn(carResponse);
+        Mockito.when(companyService.findCompany(Mockito.anyInt())).thenReturn(companyResponse);
         // when
-        companyCarService.getCompanyCars(searchRequestDTO, pageRequestDTO);
+        Page<GetCompanyCarResponse> result = companyCarService.getCompanyCars(searchRequestDTO, pageRequestDTO);
         //then
-        Mockito.verify(companyCarRepository)
-                .findAll(specificationArgumentCaptor.capture(), pageableArgumentCaptor.capture());
-        Specification<CompanyCar> specification = specificationArgumentCaptor.getValue();
+        assertThat(result).isNotNull();
+        assertThat(result.getContent()).hasSize(2);
+
+        GetCompanyCarResponse first = result.getContent().get(0);
+        assertThat(first.getIdCompany()).isEqualTo(1);
+        assertThat(first.getCarType()).isEqualTo("SUV");
+        assertThat(first.getCity()).isEqualTo("Jakarta");
+        assertThat(first.getPrice()).isEqualTo(2000.0);
+        assertThat(first.getCar()).isEqualTo(carResponse);
+        assertThat(first.getCompany()).isEqualTo(companyResponse);
     }
 }
