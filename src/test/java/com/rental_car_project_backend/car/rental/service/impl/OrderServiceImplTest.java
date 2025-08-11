@@ -1,6 +1,13 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.order.CreateOrderRequest;
+import com.rental_car_project_backend.car.rental.dto.response.car.GetCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company.GetCompanyResponse;
+import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
+import com.rental_car_project_backend.car.rental.dto.response.order.CreateOrderResponse;
+import com.rental_car_project_backend.car.rental.entity.CompanyCar;
+import com.rental_car_project_backend.car.rental.entity.Orders;
+import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.enums.OrderStatus;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.OrderRepository;
@@ -12,9 +19,7 @@ import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -41,6 +46,8 @@ class OrderServiceImplTest {
     private CompanyCarService companyCarService;
     @InjectMocks
     private OrderServiceImpl orderService;
+    @Captor
+    ArgumentCaptor<Orders> ordersArgumentCaptor;
     private CreateOrderRequest createOrderRequest;
     @BeforeEach
     void setUp(){
@@ -56,7 +63,7 @@ class OrderServiceImplTest {
                 .build();
     }
     @Test
-    void orderServiceImpl_CreateOrderMethodShouldReturnPickUpDateCannotLowerThanInput() {
+    void orderServiceImpl_CreateOrderMethodShouldReturnThereIsNoUserWithEmail() {
         // given
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Authentication fakeAuthentication = Mockito.mock(Authentication.class);
@@ -70,6 +77,65 @@ class OrderServiceImplTest {
                 orderService.createOrder(createOrderRequest))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("there is no user with email test@gmail.com");
+    }
+
+    @Test
+    void orderServiceImpl_CreateOrderMethodShouldSucceed() {
+        Users users = Users.builder()
+                .id(1)
+                .accountNumber("123456789")
+                .bankCode("BCA")
+                .email("test@gmail.com")
+                .fullName("dwiki setyawan")
+                .idRole(1)
+                .createdAt(LocalDateTime.now())
+                .build();
+        CompanyCar companyCar = CompanyCar.builder()
+                .id(1)
+                .idCompany(1)
+                .idCar(1)
+                .price(200.)
+                .idCarType(1)
+                .createdAt(LocalDateTime.now())
+                .build();
+        GetCompanyCarResponse getCompanyCarResponse = GetCompanyCarResponse.builder()
+                .idCompany(1)
+                .idCar(1)
+                .price(2000.)
+                .build();
+        GetCompanyResponse getCompanyResponse = new GetCompanyResponse();
+        GetCarResponse getCarResponse = GetCarResponse.builder()
+                .id(1)
+                .build();
+        Orders orders = new Orders();
+        orders.setIdCompanyCars(createOrderRequest.getIdCompanyCars());
+        orders.setStatus(OrderStatus.PENDING);
+        orders.setIdUser(users.getId());
+        orders.setCreatedAt(LocalDateTime.now());
+        orders.setPriceTotal(123512313.);
+        orders.setDropOffLoc(createOrderRequest.getDropOffLoc());
+        orders.setPickupLoc(createOrderRequest.getPickupLoc());
+        orders.setDropOffDate(createOrderRequest.getDropOffDate());
+        orders.setPickupDate(createOrderRequest.getPickupDate());
+        orders.setCreatedAt(LocalDateTime.now());
+        // given
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContextHolder.getContext().setAuthentication(fakeAuthentication);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(securityContext.getAuthentication().getName()).thenReturn("test@gmail.com");
+        Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(users));
+        Mockito.when(companyCarService.findCompanyCar(Mockito.anyInt())).thenReturn(getCompanyCarResponse);
+        Mockito.when(companyService.findCompany(Mockito.anyInt())).thenReturn(getCompanyResponse);
+        Mockito.when(carService.getCar(Mockito.anyInt())).thenReturn(getCarResponse);
+        Mockito.when(orderRepository.save(Mockito.any())).thenReturn(orders);
+        // when
+        orderService.createOrder(createOrderRequest);
+        // then
+        Mockito.verify(orderRepository).save(ordersArgumentCaptor.capture());
+        Orders value = ordersArgumentCaptor.getValue();
+        assertThat(value.getDropOffLoc()).isEqualTo(createOrderRequest.getDropOffLoc());
+        assertThat(value.getIdCompanyCars()).isEqualTo(orders.getIdCompanyCars());
     }
 
     @Test
