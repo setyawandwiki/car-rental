@@ -1,7 +1,12 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.company_car.CreateCompanyCarRequest;
+import com.rental_car_project_backend.car.rental.entity.CarTypes;
+import com.rental_car_project_backend.car.rental.entity.Cars;
+import com.rental_car_project_backend.car.rental.entity.Companies;
+import com.rental_car_project_backend.car.rental.entity.CompanyCar;
 import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
+import com.rental_car_project_backend.car.rental.exceptions.CarNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.*;
 import com.rental_car_project_backend.car.rental.service.CarService;
@@ -50,6 +55,7 @@ class CompanyCarServiceImplTest {
                 .idCar(1)
                 .idCompany(1)
                 .price(1000.)
+                .idCar(1)
                 .createdAt(LocalDateTime.now())
                 .status(CompanyCarStatus.ACTIVE)
                 .build();
@@ -84,6 +90,39 @@ class CompanyCarServiceImplTest {
                 companyCarService.createCompanyCar(companyCarRequest))
                 .isInstanceOf(CompanyNotFoundException.class)
                 .hasMessageContaining("Company not found with id " + companyCarRequest.getIdCompany());
+    }
+
+    @Test
+    void companyCarServiceImpl_CreateMethodShouldReturnCarNotFound() {
+        // given
+        Companies companies = Companies.builder()
+                .idCity(1)
+                .name("BMW")
+                .createdAt(LocalDateTime.now())
+                .rate(3.5)
+                .image("test.jpg")
+                .idUser(1)
+                .build();
+        CompanyCar companyCar = CompanyCar.builder()
+                .id(1)
+                .company(companies)
+                .idCarType(1)
+                .status(CompanyCarStatus.ACTIVE)
+                .build();
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContext fakeContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(fakeContext);
+        Mockito.when(fakeContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(fakeAuthentication.isAuthenticated()).thenReturn(true);
+        Mockito.when(companyRepository.findById(companyCarRequest.getIdCompany()))
+                        .thenReturn(Optional.of(companies));
+        Mockito.when(carRepository.findById(companyCarRequest.getIdCar())).thenReturn(Optional.empty());
+        // when
+        // then
+        assertThatThrownBy(()->
+                companyCarService.createCompanyCar(companyCarRequest))
+                .isInstanceOf(CarNotFoundException.class)
+                .hasMessageContaining("Car not found with id " + companyCar.getIdCar());
     }
 
     @Test
