@@ -73,7 +73,7 @@ class CompanyCarServiceImplTest {
         companyCarRequest = CreateCompanyCarRequest.builder()
                 .idCar(1)
                 .idCompany(1)
-                .price(1000.)
+                .price(2000.)
                 .idCar(1)
                 .idCarType(1)
                 .createdAt(LocalDateTime.now())
@@ -182,7 +182,7 @@ class CompanyCarServiceImplTest {
         SecurityContextHolder.setContext(fakeContext);
         Mockito.when(fakeContext.getAuthentication()).thenReturn(fakeAuthentication);
         Mockito.when(fakeAuthentication.isAuthenticated()).thenReturn(true);
-        Mockito.when(companyRepository.findById(companyCarRequest.getIdCompany()))
+        Mockito.when(companyRepository.findById(Mockito.anyInt()))
                 .thenReturn(Optional.of(companies));
         Mockito.when(carRepository.findById(companyCarRequest.getIdCar())).thenReturn(Optional.of(cars));
         Mockito.when(companyCarRepository.save(Mockito.any(CompanyCar.class))).thenReturn(companyCar);
@@ -191,7 +191,7 @@ class CompanyCarServiceImplTest {
         // then
         Mockito.verify(companyCarRepository).save(companyCarArgumentCaptor.capture());
         CompanyCar value = companyCarArgumentCaptor.getValue();
-        assertThat(companyCar.getId()).isEqualTo(value.getId());
+        assertThat(value.getPrice()).isEqualTo(companyCar.getPrice());
         assertThat(companyCar.getIdCarType()).isEqualTo(value.getIdCarType());
     }
 

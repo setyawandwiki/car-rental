@@ -67,7 +67,7 @@ class OrderServiceImplTest {
         // given
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Authentication fakeAuthentication = Mockito.mock(Authentication.class);
-        SecurityContextHolder.getContext().setAuthentication(fakeAuthentication);
+        SecurityContextHolder.setContext(securityContext);
         Mockito.when(securityContext.getAuthentication()).thenReturn(fakeAuthentication);
         Mockito.when(securityContext.getAuthentication().getName()).thenReturn("test@gmail.com");
         Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
@@ -121,7 +121,7 @@ class OrderServiceImplTest {
         // given
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
         Authentication fakeAuthentication = Mockito.mock(Authentication.class);
-        SecurityContextHolder.getContext().setAuthentication(fakeAuthentication);
+        SecurityContextHolder.setContext(securityContext);
         Mockito.when(securityContext.getAuthentication()).thenReturn(fakeAuthentication);
         Mockito.when(securityContext.getAuthentication().getName()).thenReturn("test@gmail.com");
         Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(users));
