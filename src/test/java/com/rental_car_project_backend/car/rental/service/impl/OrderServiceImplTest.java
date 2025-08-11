@@ -16,6 +16,8 @@ import com.rental_car_project_backend.car.rental.service.CarService;
 import com.rental_car_project_backend.car.rental.service.CompanyCarService;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
 import static org.assertj.core.api.Assertions.*;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -139,7 +141,19 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void deleteOrder() {
+    void orderServiceImpl_DeleteOrderMethodShouldReturnThereIsNoUserWithThatEmail() {
+        // given
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(securityContext.getAuthentication().getName()).thenReturn("test@gmail.com");
+        Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+        // when
+        // then
+        assertThatThrownBy(()->
+                orderService.deleteOrder(1))
+                .hasMessageContaining("There is no user with email test@gmail.com");
     }
 
     @Test

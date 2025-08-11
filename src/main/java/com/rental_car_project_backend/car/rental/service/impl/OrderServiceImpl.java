@@ -96,7 +96,7 @@ public class OrderServiceImpl implements OrderService {
     public DeleteOrderResponse deleteOrder(Integer id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         Users user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UserNotFoundException("there is no user with email " + email));
+                new UserNotFoundException("There is no user with email " + email));
         List<Orders> orders = orderRepository.userOrders(user.getId())
                 .stream()
                 .filter(val -> val.getStatus() == OrderStatus.PENDING).toList();
