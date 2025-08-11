@@ -2,6 +2,7 @@ package com.rental_car_project_backend.car.rental.service.impl;
 
 import com.rental_car_project_backend.car.rental.dto.request.company_car.CreateCompanyCarRequest;
 import com.rental_car_project_backend.car.rental.enums.CompanyCarStatus;
+import com.rental_car_project_backend.car.rental.exceptions.CompanyNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.*;
 import com.rental_car_project_backend.car.rental.service.CarService;
 import com.rental_car_project_backend.car.rental.service.CompanyService;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,19 +70,20 @@ class CompanyCarServiceImplTest {
                 .hasMessageContaining("You must logged in first!");
     }
     @Test
-    void companyCarServiceImpl_CreateMethodShouldReturnYouAreNotLogin() {
+    void companyCarServiceImpl_CreateMethodShouldReturnCompanyNotFound() {
         // given
         Authentication fakeAuthentication = Mockito.mock(Authentication.class);
         SecurityContext fakeContext = Mockito.mock(SecurityContext.class);
         SecurityContextHolder.setContext(fakeContext);
         Mockito.when(fakeContext.getAuthentication()).thenReturn(fakeAuthentication);
-        Mockito.when(fakeAuthentication.isAuthenticated()).thenReturn(false);
+        Mockito.when(fakeAuthentication.isAuthenticated()).thenReturn(true);
+        Mockito.when(companyRepository.findById(companyCarRequest.getIdCompany())).thenReturn(Optional.empty());
         // when
         // then
         assertThatThrownBy(()->
                 companyCarService.createCompanyCar(companyCarRequest))
-                .isInstanceOf(SecurityException.class)
-                .hasMessageContaining("You must logged in first!");
+                .isInstanceOf(CompanyNotFoundException.class)
+                .hasMessageContaining("Company not found with id " + companyCarRequest.getIdCompany());
     }
 
     @Test
