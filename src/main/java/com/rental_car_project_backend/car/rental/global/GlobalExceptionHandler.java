@@ -62,6 +62,20 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(CityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse cityNotFound(HttpServletRequest request,
+                                      HttpServletResponse response,
+                                      CityNotFoundException e){
+        log.info("something wrong with endpoint {}, with status code {}, message : {}",
+                request.getRequestURI(), response.getStatus(), e.getMessage());
+        return ErrorResponse.builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .message(e.getMessage())
+                .timestamp(new Date(System.currentTimeMillis()))
+                .build();
+    }
+
     @ExceptionHandler(UsernameAndPasswordInvalidException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse usernameAndPasswordInvalid(HttpServletRequest request,
