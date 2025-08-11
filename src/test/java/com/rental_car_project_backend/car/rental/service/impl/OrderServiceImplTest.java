@@ -255,6 +255,19 @@ class OrderServiceImplTest {
     }
 
     @Test
-    void getUserOrders() {
+    void orderServiceImpl_GetUserOrdersShouldReturnThereIsNoUserWithThatEmail() {
+        // given
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(securityContext.getAuthentication().getName()).thenReturn("test@gmail.com");
+        Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.empty());
+        // when
+        // then
+        assertThatThrownBy(()->
+                orderService.deleteOrder(1))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("There is no user with email test@gmail.com");
     }
 }
