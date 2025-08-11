@@ -5,10 +5,12 @@ import com.rental_car_project_backend.car.rental.dto.response.car.GetCarResponse
 import com.rental_car_project_backend.car.rental.dto.response.company.GetCompanyResponse;
 import com.rental_car_project_backend.car.rental.dto.response.company_car.GetCompanyCarResponse;
 import com.rental_car_project_backend.car.rental.dto.response.order.CreateOrderResponse;
+import com.rental_car_project_backend.car.rental.dto.response.order.DeleteOrderResponse;
 import com.rental_car_project_backend.car.rental.entity.CompanyCar;
 import com.rental_car_project_backend.car.rental.entity.Orders;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.enums.OrderStatus;
+import com.rental_car_project_backend.car.rental.exceptions.OrdersNotFoundException;
 import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.OrderRepository;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
@@ -27,9 +29,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -153,7 +158,100 @@ class OrderServiceImplTest {
         // then
         assertThatThrownBy(()->
                 orderService.deleteOrder(1))
+                .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("There is no user with email test@gmail.com");
+    }
+
+    @Test
+    void orderServiceImpl_DeleteOrderMethodShouldReturnOrderNotFound() {
+        // given
+        Users users = Users.builder()
+                .id(1)
+                .email("test@gmail.com")
+                .build();
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(securityContext.getAuthentication().getName()).thenReturn("test@gmail.com");
+        Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(users));
+        Mockito.when(orderRepository.userOrders(Mockito.anyInt())).thenReturn(Collections.emptyList());
+        // when
+        // then
+        assertThatThrownBy(()->
+                orderService.deleteOrder(1))
+                .isInstanceOf(OrdersNotFoundException.class)
+                .hasMessageContaining("Order not found");
+
+    }
+
+    @Test
+    void orderServiceImpl_DeleteOrderMethodShouldReturnOrderNotFoundWithId() {
+        // given
+        Users users = Users.builder()
+                .id(1)
+                .email("test@gmail.com")
+                .build();
+        Orders orders = Orders.builder()
+                .id(1)
+                .createdAt(LocalDateTime.now())
+                .dropOffDate(LocalDateTime.now().plusDays(1))
+                .dropOffLoc("cibinong")
+                .pickupDate(LocalDateTime.now().plusDays(1))
+                .pickupLoc("cibinong")
+                .status(OrderStatus.PENDING)
+                .idUser(1)
+                .priceTotal(2000.)
+                .build();
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(securityContext.getAuthentication().getName()).thenReturn("test@gmail.com");
+        Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(users));
+        Mockito.when(orderRepository.userOrders(Mockito.anyInt())).thenReturn(List.of(orders));
+        Mockito.when(orderRepository.findById(Mockito.anyInt())).thenReturn(Optional.empty());
+        // when
+        // then
+        assertThatThrownBy(()->
+                orderService.deleteOrder(1))
+                .isInstanceOf(OrdersNotFoundException.class)
+                .hasMessageContaining("Order not found with id " + 1);
+
+    }
+
+    @Test
+    void orderServiceImpl_DeleteOrderMethodShouldSucceed() {
+        // given
+        Users users = Users.builder()
+                .id(1)
+                .email("test@gmail.com")
+                .build();
+        Orders orders = Orders.builder()
+                .id(1)
+                .createdAt(LocalDateTime.now())
+                .dropOffDate(LocalDateTime.now().plusDays(1))
+                .dropOffLoc("cibinong")
+                .pickupDate(LocalDateTime.now().plusDays(1))
+                .pickupLoc("cibinong")
+                .status(OrderStatus.PENDING)
+                .idUser(1)
+                .priceTotal(2000.)
+                .build();
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(securityContext.getAuthentication().getName()).thenReturn("test@gmail.com");
+        Mockito.when(userRepository.findByEmail(Mockito.anyString())).thenReturn(Optional.of(users));
+        Mockito.when(orderRepository.userOrders(Mockito.anyInt())).thenReturn(List.of(orders));
+        Mockito.when(orderRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(orders));
+        // when
+        DeleteOrderResponse deleteOrderResponse = orderService.deleteOrder(1);
+        // then
+        assertThat("Delete Order Success").isEqualTo(deleteOrderResponse.getMessage());
+        assertThat(orders.getStatus()).isEqualTo(OrderStatus.CANCELLED);
+
     }
 
     @Test
