@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     public CreateOrderResponse createOrder(CreateOrderRequest request) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         if(request.getPickupDate().isBefore(LocalDateTime.now())){
-            throw new IllegalArgumentException("Pickup date cannot lower than your input");
+            throw new IllegalArgumentException("Pickup date cannot lower than today");
         }
         if(request.getDropOffDate().isBefore(request.getPickupDate())){
             throw new IllegalArgumentException("Pickup date cannot lower than your pick up date");
