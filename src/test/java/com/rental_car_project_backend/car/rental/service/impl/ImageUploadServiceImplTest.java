@@ -1,10 +1,14 @@
 package com.rental_car_project_backend.car.rental.service.impl;
 
 import static org.assertj.core.api.Assertions.*;
+
+import com.cloudinary.Cloudinary;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +27,8 @@ class ImageUploadServiceImplTest {
     private static final List<String> ALLOWED_TYPES = List.of("image/jpeg", "image/png");
     private static final long MAX_FILE_SIZE_KB = 1024;
 
+    @Mock
+    private Cloudinary cloudinary;
     @InjectMocks
     ImageUploadServiceImpl imageUploadService;
 
@@ -38,7 +44,7 @@ class ImageUploadServiceImplTest {
     }
 
     @Test
-    void imageUpload_UploadImageServiceIfContentTypeNullShouldReturnIllegalArgumentException() throws IOException {
+    void imageUpload_UploadImageServiceFileSizeLargerThanMaxFileIllegalArgumentException() throws IOException {
         // given
         file = new MockMultipartFile("test", new byte[]{});
         // when
@@ -47,6 +53,21 @@ class ImageUploadServiceImplTest {
                 imageUploadService.uploadImage(file, publicId, location))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("File harus berupa gambar JPG atau PNG");
+    }
+
+    @Test
+    void imageUpload_UploadImageServiceIfContentTypeNullShouldReturnIllegalArgumentException() throws IOException {
+        // given
+        file = new MockMultipartFile("test",
+                "car.jpg",
+                "image/jpeg",
+                new byte[2_000_000]);
+        // when
+        // then
+        assertThatThrownBy(()->
+                imageUploadService.uploadImage(file, publicId, location))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Ukuran maksimal gambar adalah 1MB");
     }
 
     @Test
