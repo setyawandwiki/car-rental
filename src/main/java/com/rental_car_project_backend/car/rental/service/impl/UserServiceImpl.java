@@ -40,7 +40,6 @@ public class UserServiceImpl implements UserService {
         Specification<Users>
                 userSpecification = (root, query, criteriaBuilder) -> {
             if(searchUserDTO.getFullName() != null && !searchUserDTO.getFullName().isBlank()){
-                System.out.println("test");
                 Predicate fullName = criteriaBuilder
                         .like(criteriaBuilder.lower(root.get("fullName")), "%" +
                                 searchUserDTO.getFullName().toLowerCase() + "%");

@@ -111,14 +111,6 @@ class OrderServiceImplTest {
                 .idRole(1)
                 .createdAt(LocalDateTime.now())
                 .build();
-        CompanyCar companyCar = CompanyCar.builder()
-                .id(1)
-                .idCompany(1)
-                .idCar(1)
-                .price(200.)
-                .idCarType(1)
-                .createdAt(LocalDateTime.now())
-                .build();
         GetCompanyCarResponse getCompanyCarResponse = GetCompanyCarResponse.builder()
                 .idCompany(1)
                 .idCar(1)
