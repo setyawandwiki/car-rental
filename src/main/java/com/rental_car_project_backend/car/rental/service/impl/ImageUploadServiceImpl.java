@@ -35,7 +35,7 @@ public class ImageUploadServiceImpl implements ImageUploadService {
 
         Map uploadResult = cloudinary.uploader().upload(file.getBytes(), ObjectUtils.asMap(
                 "folder", location,
-                "public_id", publicId,         // <- nama file khusus (tanpa folder)
+                "public_id", publicId,
                 "overwrite", true
         ));
         return (String) uploadResult.get("secure_url");

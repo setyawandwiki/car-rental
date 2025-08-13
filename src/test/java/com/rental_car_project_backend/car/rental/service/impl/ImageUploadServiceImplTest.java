@@ -105,6 +105,19 @@ class ImageUploadServiceImplTest {
     }
 
     @Test
-    void deleteImage() {
+    void imageUploadService_DeleteMethodShouldSucceed() throws IOException {
+        // given
+        String image = "car.jpg";
+        String location = "cars-folder";
+
+        Uploader uploaderMock = Mockito.mock(Uploader.class);
+        Mockito.when(cloudinary.uploader()).thenReturn(uploaderMock);
+
+        // when
+        imageUploadService.deleteImage(image, location);
+
+        // then
+        Mockito.verify(uploaderMock)
+                .destroy(Mockito.eq(location + "/" + image), Mockito.eq(ObjectUtils.emptyMap()));
     }
 }
