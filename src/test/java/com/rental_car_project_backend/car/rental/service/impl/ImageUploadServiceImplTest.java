@@ -3,6 +3,8 @@ package com.rental_car_project_backend.car.rental.service.impl;
 import static org.assertj.core.api.Assertions.*;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Uploader;
+import com.cloudinary.utils.ObjectUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,7 +16,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,6 +72,36 @@ class ImageUploadServiceImplTest {
                 imageUploadService.uploadImage(file, publicId, location))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Ukuran maksimal gambar adalah 1MB");
+    }
+
+    @Test
+    void imageUpload_UploadImageServiceShouldSucceed() throws IOException {
+        // given
+        MultipartFile file = new MockMultipartFile(
+                "test",
+                "car.jpg",
+                "image/jpeg",
+                "fake-image-content".getBytes()
+        );
+
+        Uploader uploaderMock = Mockito.mock(Uploader.class);
+        Mockito.when(cloudinary.uploader()).thenReturn(uploaderMock);
+
+        Map<String, Object> uploadResult = new HashMap<>();
+        uploadResult.put("secure_url", "url-image");
+
+        Mockito.when(uploaderMock.upload(
+                Mockito.any(byte[].class),
+                Mockito.anyMap()
+        )).thenReturn(uploadResult);
+
+        // when
+        String result = imageUploadService.uploadImage(file, publicId, location);
+
+        // then
+        assertEquals("url-image", result);
+        Mockito.verify(uploaderMock)
+                .upload(Mockito.eq(file.getBytes()), Mockito.anyMap());
     }
 
     @Test
