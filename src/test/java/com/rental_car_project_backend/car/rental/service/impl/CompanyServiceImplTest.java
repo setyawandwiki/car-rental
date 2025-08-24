@@ -74,7 +74,7 @@ class CompanyServiceImplTest {
                 .build();
     }
     @Test
-    void companyServicImpl_CreateCompanyMethodShoudlReturnNotLogin() {
+    void companyServiceImpl_CreateCompanyMethodShoudlReturnNotLogin() {
         // given
         Authentication fakeAuthentication = Mockito.mock(Authentication.class);
         SecurityContext fakeContext = Mockito.mock(SecurityContext.class);
@@ -90,7 +90,7 @@ class CompanyServiceImplTest {
     }
 
     @Test
-    void companyServicImpl_CreateCompanyMethodShouldReturnUserEmailNotFound() {
+    void companyServiceImpl_CreateCompanyMethodShouldReturnUserEmailNotFound() {
         // given
         Authentication fakeAuthentication = Mockito.mock(Authentication.class);
         SecurityContext fakeContext = Mockito.mock(SecurityContext.class);
