@@ -26,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -141,11 +142,15 @@ class UserServiceImplTest {
                 .password(new BCryptPasswordEncoder().encode("dwiki123"))
                 .accountNumber("0123456789")
                 .fullName("Dwiki")
+                .birthDate(new Date(System.currentTimeMillis()))
+                .phoneNumber("082136512560")
                 .build();
         UpdateUserRequest dwiki = UpdateUserRequest.builder()
                 .fullName("dwiki")
                 .bankCode("BCA")
                 .accountNumber("9876543210")
+                .birthDate(new Date(System.currentTimeMillis()))
+                .phoneNumber("082136512560")
                 .build();
         Authentication authentication = Mockito.mock(Authentication.class);
         SecurityContext securityContext = Mockito.mock(SecurityContext.class);
