@@ -4,6 +4,7 @@ import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO
 import com.rental_car_project_backend.car.rental.dto.request.page.SearchRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.request.page.SearchUserDTO;
 import com.rental_car_project_backend.car.rental.dto.request.user.UpdateUserRequest;
+import com.rental_car_project_backend.car.rental.dto.response.user.UpdateUserResponse;
 import com.rental_car_project_backend.car.rental.dto.response.user.UserResponse;
 import com.rental_car_project_backend.car.rental.entity.Address;
 import com.rental_car_project_backend.car.rental.entity.Cars;
@@ -39,7 +40,7 @@ class UserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
     @Captor
-    ArgumentCaptor<Specification<Users>> usersSpecification;
+    ArgumentCaptor<Users> usersArgumentCaptor;
     PageRequestDTO pageRequestDTO;
     SearchUserDTO searchRequestDTO;
     UpdateUserRequest updateUserRequest;
@@ -130,5 +131,37 @@ class UserServiceImplTest {
                 userService.updateUser(updateUserRequest))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("User not found with email test@gmail.com");
+    }
+    @Test
+    void updateUser_ShouldSucceed(){
+        // given
+        Users user1 = Users.builder()
+                .id(1)
+                .email("test@gmail.com")
+                .password(new BCryptPasswordEncoder().encode("dwiki123"))
+                .accountNumber("0123456789")
+                .fullName("Dwiki")
+                .build();
+        UpdateUserRequest dwiki = UpdateUserRequest.builder()
+                .fullName("dwiki")
+                .bankCode("BCA")
+                .accountNumber("9876543210")
+                .build();
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.when(authentication.isAuthenticated()).thenReturn(true);
+        Mockito.when(authentication.getName()).thenReturn("test@gmail.com");
+        Mockito.when(userRepository.findByEmail(Mockito.eq("test@gmail.com"))).thenReturn(Optional.of(user1));
+        Mockito.when(userRepository.save(Mockito.any(Users.class))).thenReturn(user1);
+        // when
+        UpdateUserResponse updateUserResponse = userService.updateUser(dwiki);
+        // then
+        Mockito.verify(userRepository).save(usersArgumentCaptor.capture());
+        Users users = usersArgumentCaptor.getValue();
+        assertThat(updateUserResponse.getFullName()).isEqualTo(users.getFullName());
+        assertThat(updateUserResponse.getBankCode()).isEqualTo(users.getBankCode());
+        assertThat(updateUserResponse.getAccountNumber()).isEqualTo(users.getAccountNumber());
     }
 }
