@@ -3,12 +3,14 @@ package com.rental_car_project_backend.car.rental.service.impl;
 import com.rental_car_project_backend.car.rental.dto.request.page.PageRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.request.page.SearchRequestDTO;
 import com.rental_car_project_backend.car.rental.dto.request.page.SearchUserDTO;
+import com.rental_car_project_backend.car.rental.dto.request.user.UpdateUserRequest;
 import com.rental_car_project_backend.car.rental.dto.response.user.UserResponse;
 import com.rental_car_project_backend.car.rental.entity.Address;
 import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.enums.AddressStatus;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,12 +18,17 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +41,7 @@ class UserServiceImplTest {
     ArgumentCaptor<Specification<Users>> usersSpecification;
     PageRequestDTO pageRequestDTO;
     SearchUserDTO searchRequestDTO;
+    UpdateUserRequest updateUserRequest;
     @BeforeEach
     void setUp(){
         searchRequestDTO = searchRequestDTO.builder()
@@ -79,18 +87,30 @@ class UserServiceImplTest {
                 Integer.parseInt(pageRequestDTO.getPageSize()),
                 sort
         );
-
-        // Mock the repository behavior
         Mockito.when(userRepository.findAll(Mockito.any(Specification.class), Mockito.eq(pageable)))
                 .thenReturn(usersPage);
-
         // When
         Page<UserResponse> result = userService.getAllUsers(pageRequestDTO, searchUserDTO);
-
         // Then
         Mockito.verify(userRepository).findAll(Mockito.any(Specification.class), Mockito.eq(pageable));
         assertThat(result.getContent()).hasSize(2);
         assertThat(result.getContent().get(0).getEmail()).isEqualTo("seryawandwiki1@gmail.com");
         assertThat(result.getContent().get(1).getEmail()).isEqualTo("danny@gmail.com");
+    }
+    @Test
+    void updateUser_ShouldReturnYourMustLoggedInFirst(){
+        // given
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        Authentication fakeAuthentication = Mockito.mock(Authentication.class);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(fakeAuthentication);
+        Mockito.when(fakeAuthentication.isAuthenticated()).thenReturn(false);
+        // when
+        // then
+        assertThatThrownBy(()->
+                userService.updateUser(updateUserRequest)).
+                isInstanceOf(SecurityException.class)
+                .hasMessageContaining("You must logged in first!");
+        Mockito.verify(fakeAuthentication).isAuthenticated();
     }
 }
