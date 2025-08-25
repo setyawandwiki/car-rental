@@ -8,13 +8,6 @@ A RESTful API backend for a car rental system, built with Java and Spring Boot. 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Configuration](#configuration)
-- [Running the Application](#running-the-application)
-- [API Endpoints](#api-endpoints)
-- [Authentication](#authentication)
-- [Testing](#testing)
-- [Folder Structure](#folder-structure)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 - **User Authentication**: Register, login, and logout with JWT-based authentication.
