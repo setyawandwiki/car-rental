@@ -9,6 +9,7 @@ import com.rental_car_project_backend.car.rental.entity.Address;
 import com.rental_car_project_backend.car.rental.entity.Cars;
 import com.rental_car_project_backend.car.rental.entity.Users;
 import com.rental_car_project_backend.car.rental.enums.AddressStatus;
+import com.rental_car_project_backend.car.rental.exceptions.UserNotFoundException;
 import com.rental_car_project_backend.car.rental.repository.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -112,5 +113,22 @@ class UserServiceImplTest {
                 isInstanceOf(SecurityException.class)
                 .hasMessageContaining("You must logged in first!");
         Mockito.verify(fakeAuthentication).isAuthenticated();
+    }
+    @Test
+    void updateUser_ShouldReturnUserNotFoundWithEmail(){
+        // given
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.when(authentication.isAuthenticated()).thenReturn(true);
+        Mockito.when(SecurityContextHolder.getContext().getAuthentication().getName()).thenReturn("test@gmail.com");
+        Mockito.when(userRepository.findByEmail(Mockito.eq("test@gmail.com"))).thenReturn(Optional.empty());
+        // when
+        // then
+        assertThatThrownBy(()->
+                userService.updateUser(updateUserRequest))
+                .isInstanceOf(UserNotFoundException.class)
+                .hasMessageContaining("User not found with email test@gmail.com");
     }
 }
